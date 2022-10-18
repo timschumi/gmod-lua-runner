@@ -1,0 +1,6 @@
+[submodule "luajit"]
+	path = luajit
+	url = https://github.com/timschumi/gmod-lua-runner-luajit
+[submodule "gmod-module-base"]
+	path = gmod-module-base
+	url = https://github.com/Facepunch/gmod-module-base
