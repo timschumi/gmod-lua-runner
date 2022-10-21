@@ -1,5 +1,6 @@
 set(SOURCES
     CLuaBase.cpp
+    libraries/base.cpp
 )
 
 add_library(lua_shared SHARED ${SOURCES})

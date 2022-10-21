@@ -1,5 +1,4 @@
 #include "CLuaBase.h"
-#include <GarrysMod/Lua/Interface.h>
 #include <cassert>
 #include <cstring>
 #include <lua.hpp>
@@ -8,6 +7,15 @@ CLuaBase::CLuaBase()
 {
     lua_state = luaL_newstate();
     lua_state->luabase = this;
+
+    lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
+#define REGISTER_LUA_FUNCTION(name, impl)             \
+    lua_pushstring(lua_state, name);                  \
+    lua_pushcfunction(lua_state, lua$##impl##$entry); \
+    lua_settable(lua_state, -3);
+    ENUMERATE_LUA_FUNCTIONS(REGISTER_LUA_FUNCTION)
+#undef REGISTER_LUA_FUNCTION
+    lua_pop(lua_state, 1);
 }
 
 CLuaBase::~CLuaBase()

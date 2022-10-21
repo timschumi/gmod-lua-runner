@@ -1,6 +1,10 @@
 #pragma once
 
-#include <GarrysMod/Lua/LuaBase.h>
+#include <GarrysMod/Lua/Interface.h>
+
+#define ENUMERATE_LUA_FUNCTIONS(S) \
+    S("print", print)              \
+    S("require", require)
 
 class CLuaBase : public GarrysMod::Lua::ILuaBase {
 public:
@@ -20,6 +24,18 @@ public:
 
 private:
     lua_State* lua_state { nullptr };
+
+    // Standard library implementation.
+#define DECLARE_LUA_FUNCTION(name, impl)                     \
+    static int lua$##impl##$entry(lua_State* state)          \
+    {                                                        \
+        auto base = dynamic_cast<CLuaBase*>(state->luabase); \
+        base->SetState(state);                               \
+        return base->lua$##impl();                           \
+    }                                                        \
+    int lua$##impl();
+    ENUMERATE_LUA_FUNCTIONS(DECLARE_LUA_FUNCTION)
+#undef DECLARE_LUA_FUNCTION
 
 public:
     // Virtual functions from ILuaBase.
