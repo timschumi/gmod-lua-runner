@@ -27,7 +27,7 @@ public:
         ErrorError,
     };
 
-    RunFileResult RunFile(char const* path);
+    RunFileResult load_and_run_file(char const* path);
 
 private:
     lua_State* lua_state { nullptr };

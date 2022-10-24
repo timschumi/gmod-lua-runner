@@ -11,7 +11,7 @@ int main(int argc, char const** argv)
         return 1;
     }
 
-    switch (lua_base.RunFile(argv[1])) {
+    switch (lua_base.load_and_run_file(argv[1])) {
     case CLuaBase::Success:
         return static_cast<int>(lua_base.CheckNumber(-1));
     case CLuaBase::SyntaxError:

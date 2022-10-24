@@ -32,7 +32,7 @@ CLuaBase::~CLuaBase()
     lua_close(lua_state);
 }
 
-CLuaBase::RunFileResult CLuaBase::RunFile(char const* path)
+CLuaBase::RunFileResult CLuaBase::load_and_run_file(char const* path)
 {
     int ret = luaL_loadfile(lua_state, path);
 
