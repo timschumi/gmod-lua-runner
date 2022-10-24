@@ -25,6 +25,8 @@ CLuaBase::CLuaBase()
 
 CLuaBase::~CLuaBase()
 {
+    unload_modules();
+
     lua_close(lua_state);
 }
 

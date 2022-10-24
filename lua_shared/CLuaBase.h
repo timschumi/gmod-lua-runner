@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GarrysMod/Lua/Interface.h>
+#include <list>
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
     FUNCTION("print", print)                                        \
@@ -30,6 +31,9 @@ public:
 
 private:
     lua_State* lua_state { nullptr };
+
+    std::list<void*> loaded_module_handles;
+    void unload_modules();
 
     // Standard library implementation.
 #define DECLARE_LUA_FUNCTION(name, impl)                     \

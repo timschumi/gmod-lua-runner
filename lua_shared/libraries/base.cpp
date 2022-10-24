@@ -37,5 +37,23 @@ int CLuaBase::lua$require()
     lua_pushcfunction(lua_state, library_init_function);
     lua_call(lua_state, 0, 0);
 
+    loaded_module_handles.push_back(library_handle);
+
     return 0;
+}
+
+void CLuaBase::unload_modules()
+{
+    for (auto handle : loaded_module_handles) {
+        auto library_fini_function = reinterpret_cast<lua_CFunction>(dlsym(handle, "gmod13_close"));
+        if (!library_fini_function) {
+            printf("dlsym failed: %s\n", dlerror());
+            continue;
+        }
+
+        lua_pushcfunction(lua_state, library_fini_function);
+        lua_call(lua_state, 0, 0);
+    }
+
+    loaded_module_handles.clear();
 }
