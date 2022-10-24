@@ -155,8 +155,8 @@ void* CLuaBase::NewUserdata(unsigned int iSize)
 
 void CLuaBase::ThrowError(char const* strError)
 {
-    // FIXME: Implement ThrowError.
-    assert(false);
+    lua_pushstring(lua_state, strError);
+    lua_error(lua_state);
 }
 
 void CLuaBase::CheckType(int iStackPos, int iType)
