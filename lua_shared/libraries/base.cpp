@@ -51,6 +51,8 @@ void CLuaBase::unload_modules()
 
         lua_pushcfunction(lua_state, library_fini_function);
         lua_call(lua_state, 0, 0);
+
+        dlclose(handle);
     }
 
     loaded_module_handles.clear();
