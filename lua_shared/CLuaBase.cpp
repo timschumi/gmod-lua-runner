@@ -13,7 +13,12 @@ CLuaBase::CLuaBase()
     lua_pushstring(lua_state, name);                  \
     lua_pushcfunction(lua_state, lua$##impl##$entry); \
     lua_settable(lua_state, -3);
-    ENUMERATE_LUA_FUNCTIONS(REGISTER_LUA_FUNCTION)
+#define REGISTER_LUA_MODULE_START(name) \
+    lua_pushstring(lua_state, name);    \
+    lua_newtable(lua_state);
+#define REGISTER_LUA_MODULE_END() \
+    lua_settable(lua_state, -3);
+    ENUMERATE_LUA_FUNCTIONS(REGISTER_LUA_FUNCTION, REGISTER_LUA_MODULE_START, REGISTER_LUA_MODULE_END)
 #undef REGISTER_LUA_FUNCTION
     lua_pop(lua_state, 1);
 }

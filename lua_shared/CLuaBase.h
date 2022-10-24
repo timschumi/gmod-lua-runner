@@ -2,9 +2,15 @@
 
 #include <GarrysMod/Lua/Interface.h>
 
-#define ENUMERATE_LUA_FUNCTIONS(S) \
-    S("print", print)              \
-    S("require", require)
+#define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
+    FUNCTION("print", print)                                        \
+    FUNCTION("require", require)                                    \
+    MODULE_START("hook")                                            \
+    FUNCTION("Add", hook_add)                                       \
+    MODULE_END()                                                    \
+    MODULE_START("timer")                                           \
+    FUNCTION("Create", timer_create)                                \
+    MODULE_END()
 
 class CLuaBase : public GarrysMod::Lua::ILuaBase {
 public:
@@ -34,8 +40,12 @@ private:
         return base->lua$##impl();                           \
     }                                                        \
     int lua$##impl();
-    ENUMERATE_LUA_FUNCTIONS(DECLARE_LUA_FUNCTION)
+#define DECLARE_LUA_MODULE_START(name)
+#define DECLARE_LUA_MODULE_END()
+    ENUMERATE_LUA_FUNCTIONS(DECLARE_LUA_FUNCTION, DECLARE_LUA_MODULE_START, DECLARE_LUA_MODULE_END)
 #undef DECLARE_LUA_FUNCTION
+#undef DECLARE_LUA_MODULE_START
+#undef DECLARE_LUA_MODULE_END
 
 public:
     // Virtual functions from ILuaBase.
