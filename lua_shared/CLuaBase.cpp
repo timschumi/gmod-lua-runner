@@ -175,8 +175,11 @@ char const* CLuaBase::GetString(int iStackPos, unsigned int* iOutLen)
     size_t output_length = 0;
     char const* string = lua_tolstring(lua_state, iStackPos, &output_length);
 
-    assert(output_length <= UINT_MAX);
-    *iOutLen = output_length;
+    if (iOutLen) {
+        assert(output_length <= UINT_MAX);
+        *iOutLen = output_length;
+    }
+
     return string;
 }
 
