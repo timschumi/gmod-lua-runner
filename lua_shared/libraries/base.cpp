@@ -24,14 +24,12 @@ int CLuaBase::lua$require()
 
     void* library_handle = dlopen(full_name, RTLD_LAZY);
     if (!library_handle) {
-        printf("dlopen failed: %s\n", dlerror());
-        return 0;
+        return luaL_error(lua_state, "dlopen failed: %s", dlerror());
     }
 
     auto library_init_function = reinterpret_cast<lua_CFunction>(dlsym(library_handle, "gmod13_open"));
     if (!library_init_function) {
-        printf("dlsym failed: %s\n", dlerror());
-        return 0;
+        return luaL_error(lua_state, "dlsym failed: %s", dlerror());
     }
 
     lua_pushcfunction(lua_state, library_init_function);
@@ -47,7 +45,7 @@ void CLuaBase::unload_modules()
     for (auto handle : loaded_module_handles) {
         auto library_fini_function = reinterpret_cast<lua_CFunction>(dlsym(handle, "gmod13_close"));
         if (!library_fini_function) {
-            printf("dlsym failed: %s\n", dlerror());
+            fprintf(stderr, "dlsym failed: %s\n", dlerror());
             continue;
         }
 
