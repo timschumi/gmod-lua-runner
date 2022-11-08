@@ -5,6 +5,7 @@
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
     FUNCTION("print", print)                                        \
+    FUNCTION("PrintTable", print_table)                             \
     FUNCTION("require", require)                                    \
     MODULE_START("hook")                                            \
     FUNCTION("Add", hook_add)                                       \

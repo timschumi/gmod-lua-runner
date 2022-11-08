@@ -15,6 +15,35 @@ int CLuaBase::lua$print()
     return 0;
 }
 
+int CLuaBase::lua$print_table()
+{
+    // Note: `done` is ignored.
+    // FIXME: Handle non-string keys and values.
+    int indent = lua_tonumber(lua_state, 2);
+
+    lua_pushnil(lua_state);
+    while (lua_next(lua_state, 1) != 0) {
+        for (int i = 0; i < indent; i++)
+            printf("\t");
+
+        auto key = lua_tostring(lua_state, -2);
+
+        if (lua_type(lua_state, -1) == LUA_TTABLE) {
+            printf("%s:\n", key);
+            lua_pushcfunction(lua_state, CLuaBase::lua$print_table$entry);
+            lua_pushvalue(lua_state, -2);
+            lua_pushnumber(lua_state, indent + 2);
+            lua_call(lua_state, 2, 0);
+        } else {
+            auto value = lua_tostring(lua_state, -1);
+            printf("%s\t=\t%s\n", key, value);
+        }
+
+        lua_pop(lua_state, 1);
+    }
+    return 0;
+}
+
 int CLuaBase::lua$require()
 {
     char full_name[32];
