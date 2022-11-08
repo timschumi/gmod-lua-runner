@@ -2,6 +2,12 @@
 #include <lua.hpp>
 #include <dlfcn.h>
 
+int CLuaBase::lua$cur_time()
+{
+    lua_pushnumber(lua_state, uptime);
+    return 1;
+}
+
 int CLuaBase::lua$print()
 {
     int nargs = lua_gettop(lua_state);

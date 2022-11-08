@@ -6,6 +6,7 @@
 #include <string>
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
+    FUNCTION("CurTime", cur_time)                                   \
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", print_table)                             \
     FUNCTION("require", require)                                    \
@@ -46,6 +47,8 @@ public:
 
 private:
     lua_State* lua_state { nullptr };
+
+    double uptime { 0 };
 
     std::list<void*> loaded_module_handles;
     void unload_modules();
