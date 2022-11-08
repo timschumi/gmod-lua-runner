@@ -27,6 +27,16 @@ int CLuaBase::lua$coroutine_resume()
     return 1 + number_of_returned_values;
 }
 
+int CLuaBase::lua$coroutine_running()
+{
+    bool is_main_thread = lua_pushthread(lua_state);
+    if (is_main_thread) {
+        lua_pop(lua_state, 1);
+        lua_pushnil(lua_state);
+    }
+    return 1;
+}
+
 int CLuaBase::lua$coroutine_yield()
 {
     int number_of_arguments = lua_gettop(lua_state);
