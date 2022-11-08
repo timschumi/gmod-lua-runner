@@ -2,6 +2,8 @@
 
 #include <GarrysMod/Lua/Interface.h>
 #include <list>
+#include <map>
+#include <string>
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
     FUNCTION("print", print)                                        \
@@ -9,6 +11,10 @@
     FUNCTION("require", require)                                    \
     MODULE_START("hook")                                            \
     FUNCTION("Add", hook_add)                                       \
+    FUNCTION("Call", hook_call)                                     \
+    FUNCTION("GetTable", hook_get_table)                            \
+    FUNCTION("Remove", hook_remove)                                 \
+    FUNCTION("Run", hook_run)                                       \
     MODULE_END()                                                    \
     MODULE_START("timer")                                           \
     FUNCTION("Create", timer_create)                                \
@@ -35,6 +41,8 @@ private:
 
     std::list<void*> loaded_module_handles;
     void unload_modules();
+
+    std::map<std::string, std::map<std::string, int>> registered_hooks;
 
     // Standard library implementation.
 #define DECLARE_LUA_FUNCTION(name, impl)                     \
