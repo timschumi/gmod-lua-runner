@@ -1,7 +1,9 @@
 #include "CLuaBase.h"
 #include <cassert>
+#include <chrono>
 #include <cstring>
 #include <lua.hpp>
+#include <thread>
 
 CLuaBase::CLuaBase()
 {
@@ -61,6 +63,35 @@ CLuaBase::RunFileResult CLuaBase::load_and_run_file(char const* path)
     }
 
     return RunFileResult::Success;
+}
+
+bool CLuaBase::is_active()
+{
+    for (auto coroutine : coroutines) {
+        int coroutine_status = lua_status(coroutine);
+
+        if (coroutine_status == LUA_YIELD)
+            return true;
+    }
+
+    return false;
+}
+
+void CLuaBase::run_event_loop()
+{
+    while (is_active()) {
+        // hook.Run("Think")
+        lua_pushcfunction(lua_state, CLuaBase::lua$hook_run$entry);
+        lua_pushstring(lua_state, "Think");
+        lua_call(lua_state, 1, 0);
+
+        // hook.Run("Tick")
+        lua_pushcfunction(lua_state, CLuaBase::lua$hook_run$entry);
+        lua_pushstring(lua_state, "Tick");
+        lua_call(lua_state, 1, 0);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 66));
+    }
 }
 
 int CLuaBase::Top()

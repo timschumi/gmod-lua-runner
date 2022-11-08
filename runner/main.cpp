@@ -12,8 +12,11 @@ int main(int argc, char const** argv)
     }
 
     switch (lua_base.load_and_run_file(argv[1])) {
-    case CLuaBase::Success:
-        return static_cast<int>(lua_base.CheckNumber(-1));
+    case CLuaBase::Success: {
+        int return_value = static_cast<int>(lua_base.CheckNumber(-1));
+        lua_base.run_event_loop();
+        return return_value;
+    }
     case CLuaBase::SyntaxError:
         fprintf(stderr, "Syntax Error: %s\n", lua_base.CheckString(-1));
         return 1;

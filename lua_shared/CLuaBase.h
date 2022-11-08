@@ -40,6 +40,8 @@ public:
     };
 
     RunFileResult load_and_run_file(char const* path);
+    bool is_active();
+    void run_event_loop();
 
 private:
     lua_State* lua_state { nullptr };
