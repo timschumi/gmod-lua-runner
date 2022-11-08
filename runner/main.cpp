@@ -7,14 +7,13 @@
 
 int main(int argc, char const** argv)
 {
-    char* directory_from_env = getenv("GMOD_DIR");
     std::string original_directory = std::filesystem::current_path().generic_string();
 
-    if (directory_from_env) {
-        if (chdir(directory_from_env) < 0) {
-            fprintf(stderr, "Failed to change directory to '%s': %s\n", directory_from_env, strerror(errno));
-            return 1;
-        }
+    std::string directory_from_env = getenv("GMOD_DIR") ?: std::filesystem::path(argv[0]).parent_path().generic_string();
+
+    if (chdir(directory_from_env.c_str()) < 0) {
+        fprintf(stderr, "Failed to change directory to '%s': %s\n", directory_from_env.c_str(), strerror(errno));
+        return 1;
     }
 
     if (argc <= 1) {
