@@ -9,3 +9,5 @@ add_subdirectory(lua_shared)
 add_subdirectory(luajit)
 add_subdirectory(runner)
 add_subdirectory(tier0)
+
+include(CPack)
