@@ -1,0 +1,10 @@
+if(NOT CMAKE_HOST_SYSTEM_NAME EQUAL "Linux")
+	set(CMAKE_SYSTEM_NAME Linux)
+endif()
+
+set(CMAKE_SYSTEM_PROCESSOR "x86_64")
+
+set(CPACK_SYSTEM_NAME "linux64")
+set(GMOD_LIBTIER0_DIR "bin/linux64")
+set(GMOD_LUASHARED_DIR "bin/linux64")
+set(GMOD_MODULE_ARCH "linux64")

@@ -15,7 +15,7 @@ jobs:
 
     - name: Configure project
       run: |
-        cmake -B build
+        cmake -B build -DCMAKE_TOOLCHAIN_FILE=toolchain-linux64.cmake
 
     - name: Build binaries
       run: |

@@ -77,7 +77,7 @@ int CLuaBase::lua$require()
     char full_name[32];
 
     char const* name = lua_tostring(lua_state, -1);
-    snprintf(full_name, sizeof(full_name), "gmsv_%s_linux64.dll", name);
+    snprintf(full_name, sizeof(full_name), "gmsv_%s_" GMOD_MODULE_ARCH ".dll", name);
 
     void* library_handle = dlopen(full_name, RTLD_LAZY);
     if (!library_handle) {
