@@ -74,7 +74,7 @@ int CLuaBase::lua$print_table()
 
 int CLuaBase::lua$require()
 {
-    char const* format = "gmsv_%s_" GMOD_MODULE_ARCH ".dll";
+    char const* format = "garrysmod/lua/bin/gmsv_%s_" GMOD_MODULE_ARCH ".dll";
     char const* module_name = lua_tostring(lua_state, -1);
 
     size_t formatted_name_length = snprintf(nullptr, 0, format, module_name);
