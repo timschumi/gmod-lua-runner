@@ -74,10 +74,12 @@ int CLuaBase::lua$print_table()
 
 int CLuaBase::lua$require()
 {
-    char full_name[32];
+    char const* format = "gmsv_%s_" GMOD_MODULE_ARCH ".dll";
+    char const* module_name = lua_tostring(lua_state, -1);
 
-    char const* name = lua_tostring(lua_state, -1);
-    snprintf(full_name, sizeof(full_name), "gmsv_%s_" GMOD_MODULE_ARCH ".dll", name);
+    size_t formatted_name_length = snprintf(nullptr, 0, format, module_name);
+    char full_name[formatted_name_length + 1];
+    snprintf(full_name, sizeof(full_name), format, module_name);
 
     void* library_handle = dlopen(full_name, RTLD_LAZY);
     if (!library_handle) {
