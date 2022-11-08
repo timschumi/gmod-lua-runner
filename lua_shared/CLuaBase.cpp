@@ -90,10 +90,22 @@ void CLuaBase::run_event_loop()
         lua_pushstring(lua_state, "Tick");
         lua_call(lua_state, 1, 0);
 
+        // Run timers whose cooldowns have expired.
+        for (auto &timer : timers) {
+            if (timer.second.cooldown > 0)
+                continue;
+
+            timer.second.cooldown = timer.second.delay;
+            lua_rawgeti(lua_state, LUA_REGISTRYINDEX, timer.second.function);
+            lua_call(lua_state, 0, 0);
+        }
+
         // Shift everything by 1/66th of a second.
         constexpr double delta = 1.0 / 66;
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(1000 * delta)));
         uptime += delta;
+        for (auto &timer : timers)
+            timer.second.cooldown -= delta;
     }
 }
 

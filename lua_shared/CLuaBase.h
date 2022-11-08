@@ -57,6 +57,14 @@ private:
 
     std::list<lua_State*> coroutines;
 
+    struct Timer {
+        double delay;
+        double repetitions;
+        int function;
+        double cooldown;
+    };
+    std::map<std::string, Timer> timers;
+
     // Standard library implementation.
 #define DECLARE_LUA_FUNCTION(name, impl)                     \
     static int lua$##impl##$entry(lua_State* state)          \
