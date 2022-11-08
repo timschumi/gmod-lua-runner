@@ -7,8 +7,30 @@ int CLuaBase::lua$print()
     int nargs = lua_gettop(lua_state);
 
     for (int i = 1; i <= nargs; i++) {
-        char const* string = lua_tostring(lua_state, i);
-        printf("%s%s", string, i < nargs ? "\t" : "");
+        int type = lua_type(lua_state, i);
+        switch (type) {
+        case LUA_TNIL:
+            printf("nil");
+            break;
+        case LUA_TBOOLEAN:
+            printf(lua_toboolean(lua_state, i) ? "true" : "false");
+            break;
+        case LUA_TNUMBER:
+            printf("%g", lua_tonumber(lua_state, i));
+            break;
+        case LUA_TSTRING:
+            printf("%s", lua_tostring(lua_state, i));
+            break;
+        case LUA_TTHREAD:
+            printf("<thread>");
+            break;
+        default:
+            printf("<unknown type %d>", type);
+            break;
+        }
+
+        if (i < nargs)
+            printf("\t");
     }
 
     printf("\n");
