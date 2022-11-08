@@ -20,8 +20,9 @@ int CLuaBase::lua$coroutine_resume()
     auto state_backup = lua_state;
     int coroutine_result = lua_resume(coroutine, number_of_arguments);
     lua_state = state_backup;
-    int number_of_returned_values = lua_gettop(coroutine);
-    lua_pushboolean(lua_state, coroutine_result == LUA_YIELD || coroutine_result == LUA_OK);
+    bool success = coroutine_result == LUA_YIELD || coroutine_result == LUA_OK;
+    int number_of_returned_values = success ? lua_gettop(coroutine) : 1;
+    lua_pushboolean(lua_state, success);
     lua_xmove(coroutine, lua_state, number_of_returned_values);
     return 1 + number_of_returned_values;
 }
