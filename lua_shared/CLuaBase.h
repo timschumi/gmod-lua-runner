@@ -9,6 +9,11 @@
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", print_table)                             \
     FUNCTION("require", require)                                    \
+    MODULE_START("coroutine")                                       \
+    FUNCTION("create", coroutine_create)                            \
+    FUNCTION("resume", coroutine_resume)                            \
+    FUNCTION("yield", coroutine_yield)                              \
+    MODULE_END()                                                    \
     MODULE_START("hook")                                            \
     FUNCTION("Add", hook_add)                                       \
     FUNCTION("Call", hook_call)                                     \
@@ -43,6 +48,8 @@ private:
     void unload_modules();
 
     std::map<std::string, std::map<std::string, int>> registered_hooks;
+
+    std::list<lua_State*> coroutines;
 
     // Standard library implementation.
 #define DECLARE_LUA_FUNCTION(name, impl)                     \

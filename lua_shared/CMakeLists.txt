@@ -1,6 +1,7 @@
 set(SOURCES
     CLuaBase.cpp
     libraries/base.cpp
+    libraries/coroutine.cpp
     libraries/hook.cpp
     libraries/timer.cpp
 )
