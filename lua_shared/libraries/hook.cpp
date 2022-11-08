@@ -33,7 +33,7 @@ int CLuaBase::lua$hook_call()
     if (!registered_hooks.contains(event_name))
         return 0;
 
-    for (const auto& hook : registered_hooks[event_name]) {
+    for (auto const& hook : registered_hooks[event_name]) {
         int stack_top_without_args = lua_gettop(lua_state);
 
         lua_rawgeti(lua_state, LUA_REGISTRYINDEX, hook.second);
@@ -56,10 +56,10 @@ int CLuaBase::lua$hook_get_table()
 {
     lua_createtable(lua_state, 0, 0);
 
-    for (const auto& event : registered_hooks) {
+    for (auto const& event : registered_hooks) {
         lua_pushstring(lua_state, event.first.c_str());
         lua_createtable(lua_state, 0, 0);
-        for (const auto& hook : event.second) {
+        for (auto const& hook : event.second) {
             lua_pushstring(lua_state, hook.first.c_str());
             lua_rawgeti(lua_state, LUA_REGISTRYINDEX, hook.second);
             lua_settable(lua_state, -3);

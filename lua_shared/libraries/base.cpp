@@ -1,6 +1,6 @@
 #include "CLuaBase.h"
-#include <lua.hpp>
 #include <dlfcn.h>
+#include <lua.hpp>
 
 int CLuaBase::lua$cur_time()
 {

@@ -91,7 +91,7 @@ void CLuaBase::run_event_loop()
         lua_call(lua_state, 1, 0);
 
         // Run timers whose cooldowns have expired.
-        for (auto &timer : timers) {
+        for (auto& timer : timers) {
             if (timer.second.cooldown > 0)
                 continue;
 
@@ -104,7 +104,7 @@ void CLuaBase::run_event_loop()
         constexpr double delta = 1.0 / 66;
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(1000 * delta)));
         uptime += delta;
-        for (auto &timer : timers)
+        for (auto& timer : timers)
             timer.second.cooldown -= delta;
     }
 }

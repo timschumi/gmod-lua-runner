@@ -12,7 +12,7 @@ int CLuaBase::lua$timer_create()
     if (timers.contains(identifier))
         luaL_unref(lua_state, LUA_REGISTRYINDEX, timers[identifier].function);
 
-    timers[identifier] = {delay, repetitions, function_ref, delay};
+    timers[identifier] = { delay, repetitions, function_ref, delay };
 
     return 0;
 }
