@@ -58,7 +58,7 @@ int CLuaBase::lua$file_Find()
             else
                 lua_pushvalue(lua_state, -2);
 
-            lua_pushnumber(lua_state, lua_objlen(lua_state, -1));
+            lua_pushnumber(lua_state, lua_objlen(lua_state, -1) + 1);
             lua_pushstring(lua_state, file_path.c_str());
             lua_settable(lua_state, -3);
 
