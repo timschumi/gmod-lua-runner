@@ -37,6 +37,30 @@ int CLuaBase::lua$include()
     return lua_gettop(lua_state) - initial_top;
 }
 
+// https://wiki.facepunch.com/gmod/Global.MsgC
+int CLuaBase::lua$MsgC()
+{
+    int number_of_arguments = lua_gettop(lua_state);
+
+    for (int i = 1; i <= number_of_arguments; i++) {
+        // FIXME: Support colors.
+        if (lua_getmetatable(lua_state, i) != 0) {
+            lua_getfield(lua_state, LUA_REGISTRYINDEX, "Color");
+            bool is_color = lua_rawequal(lua_state, -1, -2) == 1;
+            lua_pop(lua_state, 2);
+            if (is_color)
+                continue;
+        }
+
+        lua_pushcfunction(lua_state, lua$tostring$entry);
+        lua_pushvalue(lua_state, i);
+        lua_call(lua_state, 1, 1);
+        printf("%s", lua_tostring(lua_state, -1));
+        lua_pop(lua_state, 1);
+    }
+    return 0;
+}
+
 // https://wiki.facepunch.com/gmod/Global.print
 int CLuaBase::lua$print()
 {
