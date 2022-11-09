@@ -3,9 +3,11 @@
 #include <GarrysMod/Lua/Interface.h>
 #include <list>
 #include <map>
+#include <optional>
 #include <string>
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
+    FUNCTION("CreateConVar", create_con_var)                        \
     FUNCTION("CurTime", cur_time)                                   \
     FUNCTION("include", include)                                    \
     FUNCTION("print", print)                                        \
@@ -27,6 +29,13 @@
     MODULE_START("timer")                                           \
     FUNCTION("Create", timer_create)                                \
     MODULE_END()
+
+#define ENUMERATE_METATABLES(METATABLE_START, METATABLE_END, TABLE_START, TABLE_END, FUNCTION) \
+    METATABLE_START("ConVar")                                                                  \
+    TABLE_START("__index")                                                                     \
+    FUNCTION("GetBool", con_var_get_bool)                                                      \
+    TABLE_END()                                                                                \
+    METATABLE_END()
 
 class CLuaBase : public GarrysMod::Lua::ILuaBase {
 public:
@@ -67,6 +76,16 @@ private:
     };
     std::map<std::string, Timer> timers;
 
+    // TODO: Maybe move this to libtier1.
+    struct ConVar {
+        std::string value;
+        long flags;
+        std::optional<std::string> helptext;
+        std::optional<double> min;
+        std::optional<double> max;
+    };
+    std::map<std::string, ConVar> convars;
+
     // Standard library implementation.
 #define DECLARE_LUA_FUNCTION(name, impl)                     \
     static int lua$##impl##$entry(lua_State* state)          \
@@ -82,6 +101,21 @@ private:
 #undef DECLARE_LUA_FUNCTION
 #undef DECLARE_LUA_MODULE_START
 #undef DECLARE_LUA_MODULE_END
+
+    // Metatables.
+#define NOOP0()
+#define NOOP1(unused)
+#define DECLARE_METATABLE_FUNCTION(name, impl)               \
+    static int lua$meta$##impl##$entry(lua_State* state)     \
+    {                                                        \
+        auto base = dynamic_cast<CLuaBase*>(state->luabase); \
+        base->SetState(state);                               \
+        return base->lua$meta$##impl();                      \
+    }                                                        \
+    int lua$meta$##impl();
+    ENUMERATE_METATABLES(NOOP1, NOOP0, NOOP1, NOOP0, DECLARE_METATABLE_FUNCTION)
+#undef NOOP0
+#undef NOOP1
 
 public:
     // Virtual functions from ILuaBase.

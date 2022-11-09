@@ -25,6 +25,29 @@ CLuaBase::CLuaBase()
 #undef REGISTER_LUA_MODULE_START
 #undef REGISTER_LUA_MODULE_END
     lua_pop(lua_state, 1);
+
+#define REGISTER_METATABLE_START(name)   \
+    luaL_newmetatable(lua_state, name);  \
+    lua_pushstring(lua_state, "__name"); \
+    lua_pushstring(lua_state, name);     \
+    lua_settable(lua_state, -3);
+#define REGISTER_METATABLE_END() \
+    lua_pop(lua_state, 1);
+#define REGISTER_METATABLE_TABLE_START(name) \
+    lua_pushstring(lua_state, name);         \
+    lua_newtable(lua_state);
+#define REGISTER_METATABLE_TABLE_END() \
+    lua_settable(lua_state, -3);
+#define REGISTER_METATABLE_FUNCTION(name, impl)            \
+    lua_pushstring(lua_state, name);                       \
+    lua_pushcfunction(lua_state, lua$meta$##impl##$entry); \
+    lua_settable(lua_state, -3);
+    ENUMERATE_METATABLES(REGISTER_METATABLE_START, REGISTER_METATABLE_END, REGISTER_METATABLE_TABLE_START, REGISTER_METATABLE_TABLE_END, REGISTER_METATABLE_FUNCTION)
+#undef REGISTER_METATABLE_START
+#undef REGISTER_METATABLE_END
+#undef REGISTER_METATABLE_TABLE_START
+#undef REGISTER_METATABLE_TABLE_END
+#undef REGISTER_METATABLE_FUNCTION
 }
 
 CLuaBase::~CLuaBase()
