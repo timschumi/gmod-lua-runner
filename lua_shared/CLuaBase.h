@@ -21,6 +21,9 @@
     FUNCTION("running", coroutine_running)                          \
     FUNCTION("yield", coroutine_yield)                              \
     MODULE_END()                                                    \
+    MODULE_START("file")                                            \
+    FUNCTION("Find", file_Find)                                     \
+    MODULE_END()                                                    \
     MODULE_START("hook")                                            \
     FUNCTION("Add", hook_Add)                                       \
     FUNCTION("Call", hook_Call)                                     \
