@@ -14,3 +14,22 @@ int CLuaBase::lua$table_Add()
     }
     return 1;
 }
+
+// https://wiki.facepunch.com/gmod/table.remove
+int CLuaBase::lua$table_remove()
+{
+    size_t table_length = lua_objlen(lua_state, 1);
+    double index = lua_gettop(lua_state) >= 2 ? lua_tonumber(lua_state, 2) : table_length;
+
+    if (index < 1 || index > table_length)
+        return 0;
+
+    lua_pushnumber(lua_state, index);
+    lua_gettable(lua_state, 1);
+
+    lua_pushnumber(lua_state, index);
+    lua_pushnil(lua_state);
+    lua_settable(lua_state, 1);
+
+    return 1;
+}
