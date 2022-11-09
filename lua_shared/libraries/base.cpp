@@ -40,6 +40,16 @@ int CLuaBase::lua$print()
         case LUA_TSTRING:
             printf("%s", lua_tostring(lua_state, i));
             break;
+        case LUA_TUSERDATA: {
+            void* userdata = lua_touserdata(lua_state, i);
+            lua_getmetatable(lua_state, i);
+            lua_pushstring(lua_state, "__name");
+            lua_rawget(lua_state, -2);
+            char const* name = lua_tostring(lua_state, -1);
+            lua_pop(lua_state, 2);
+            printf("<%p:%s>", userdata, name);
+            break;
+        }
         case LUA_TTHREAD:
             printf("<thread>");
             break;
