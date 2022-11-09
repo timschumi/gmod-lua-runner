@@ -1,7 +1,7 @@
 #include "CLuaBase.h"
 #include <lua.hpp>
 
-int CLuaBase::lua$meta$color_eq()
+int CLuaBase::lua$meta$Color_eq()
 {
 #define COMPARE_INDEX(name)                     \
     lua_pushstring(lua_state, name);            \
@@ -22,7 +22,7 @@ int CLuaBase::lua$meta$color_eq()
 #undef COMPARE_INDEX
 }
 
-int CLuaBase::lua$color()
+int CLuaBase::lua$Color()
 {
     int number_of_arguments = lua_gettop(lua_state);
 

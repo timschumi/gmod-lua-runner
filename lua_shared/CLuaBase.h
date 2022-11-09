@@ -7,12 +7,12 @@
 #include <string>
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
-    FUNCTION("Color", color)                                        \
-    FUNCTION("CreateConVar", create_con_var)                        \
-    FUNCTION("CurTime", cur_time)                                   \
+    FUNCTION("Color", Color)                                        \
+    FUNCTION("CreateConVar", CreateConVar)                          \
+    FUNCTION("CurTime", CurTime)                                    \
     FUNCTION("include", include)                                    \
     FUNCTION("print", print)                                        \
-    FUNCTION("PrintTable", print_table)                             \
+    FUNCTION("PrintTable", PrintTable)                              \
     FUNCTION("require", require)                                    \
     MODULE_START("coroutine")                                       \
     FUNCTION("create", coroutine_create)                            \
@@ -21,26 +21,26 @@
     FUNCTION("yield", coroutine_yield)                              \
     MODULE_END()                                                    \
     MODULE_START("hook")                                            \
-    FUNCTION("Add", hook_add)                                       \
-    FUNCTION("Call", hook_call)                                     \
-    FUNCTION("GetTable", hook_get_table)                            \
-    FUNCTION("Remove", hook_remove)                                 \
-    FUNCTION("Run", hook_run)                                       \
+    FUNCTION("Add", hook_Add)                                       \
+    FUNCTION("Call", hook_Call)                                     \
+    FUNCTION("GetTable", hook_GetTable)                             \
+    FUNCTION("Remove", hook_Remove)                                 \
+    FUNCTION("Run", hook_Run)                                       \
     MODULE_END()                                                    \
     MODULE_START("table")                                           \
-    FUNCTION("Add", table_add)                                      \
+    FUNCTION("Add", table_Add)                                      \
     MODULE_END()                                                    \
     MODULE_START("timer")                                           \
-    FUNCTION("Create", timer_create)                                \
+    FUNCTION("Create", timer_Create)                                \
     MODULE_END()
 
 #define ENUMERATE_METATABLES(METATABLE_START, METATABLE_END, TABLE_START, TABLE_END, FUNCTION) \
     METATABLE_START("Color")                                                                   \
-    FUNCTION("__eq", color_eq)                                                                 \
+    FUNCTION("__eq", Color_eq)                                                                 \
     METATABLE_END()                                                                            \
     METATABLE_START("ConVar")                                                                  \
     TABLE_START("__index")                                                                     \
-    FUNCTION("GetBool", con_var_get_bool)                                                      \
+    FUNCTION("GetBool", ConVar_GetBool)                                                        \
     TABLE_END()                                                                                \
     METATABLE_END()
 

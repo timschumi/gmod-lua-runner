@@ -131,12 +131,12 @@ void CLuaBase::run_event_loop()
 {
     while (is_active()) {
         // hook.Run("Think")
-        lua_pushcfunction(lua_state, CLuaBase::lua$hook_run$entry);
+        lua_pushcfunction(lua_state, CLuaBase::lua$hook_Run$entry);
         lua_pushstring(lua_state, "Think");
         lua_call(lua_state, 1, 0);
 
         // hook.Run("Tick")
-        lua_pushcfunction(lua_state, CLuaBase::lua$hook_run$entry);
+        lua_pushcfunction(lua_state, CLuaBase::lua$hook_Run$entry);
         lua_pushstring(lua_state, "Tick");
         lua_call(lua_state, 1, 0);
 

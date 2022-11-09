@@ -1,7 +1,7 @@
 #include "CLuaBase.h"
 #include <lua.hpp>
 
-int CLuaBase::lua$table_add()
+int CLuaBase::lua$table_Add()
 {
     lua_pushnil(lua_state);
     while (lua_next(lua_state, 2) != 0) {

@@ -4,7 +4,7 @@
 
 #define FCVAR_NONE 0
 
-int CLuaBase::lua$meta$con_var_get_bool()
+int CLuaBase::lua$meta$ConVar_GetBool()
 {
     auto convar = static_cast<ConVar**>(lua_touserdata(lua_state, 1));
 
@@ -14,7 +14,7 @@ int CLuaBase::lua$meta$con_var_get_bool()
     return 1;
 }
 
-int CLuaBase::lua$create_con_var()
+int CLuaBase::lua$CreateConVar()
 {
     int number_of_arguments = lua_gettop(lua_state);
     std::string name = lua_tostring(lua_state, 1);

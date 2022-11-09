@@ -1,7 +1,7 @@
 #include "CLuaBase.h"
 #include <lua.hpp>
 
-int CLuaBase::lua$timer_create()
+int CLuaBase::lua$timer_Create()
 {
     std::string identifier = lua_tostring(lua_state, 1);
     lua_Number delay = lua_tonumber(lua_state, 2);

@@ -1,7 +1,7 @@
 #include "CLuaBase.h"
 #include <lua.hpp>
 
-int CLuaBase::lua$hook_add()
+int CLuaBase::lua$hook_Add()
 {
     std::string event_name = lua_tostring(lua_state, 1);
     std::string identifier = lua_tostring(lua_state, 2);
@@ -22,7 +22,7 @@ int CLuaBase::lua$hook_add()
     return 0;
 }
 
-int CLuaBase::lua$hook_call()
+int CLuaBase::lua$hook_Call()
 {
     std::string event_name = lua_tostring(lua_state, 1);
     // FIXME: Check on the gamemode table.
@@ -52,7 +52,7 @@ int CLuaBase::lua$hook_call()
     return 0;
 }
 
-int CLuaBase::lua$hook_get_table()
+int CLuaBase::lua$hook_GetTable()
 {
     lua_createtable(lua_state, 0, 0);
 
@@ -70,7 +70,7 @@ int CLuaBase::lua$hook_get_table()
     return 1;
 }
 
-int CLuaBase::lua$hook_remove()
+int CLuaBase::lua$hook_Remove()
 {
     std::string event_name = lua_tostring(lua_state, 1);
     std::string identifier = lua_tostring(lua_state, 2);
@@ -86,13 +86,13 @@ int CLuaBase::lua$hook_remove()
     return 0;
 }
 
-int CLuaBase::lua$hook_run()
+int CLuaBase::lua$hook_Run()
 {
     std::string event_name = lua_tostring(lua_state, 1);
     int number_of_arguments = lua_gettop(lua_state) - 1;
     int stack_top_without_args = lua_gettop(lua_state);
 
-    lua_pushcfunction(lua_state, CLuaBase::lua$hook_call$entry);
+    lua_pushcfunction(lua_state, CLuaBase::lua$hook_Call$entry);
     lua_pushstring(lua_state, event_name.c_str());
     // FIXME: Implement gamemodes.
     lua_pushnil(lua_state);
