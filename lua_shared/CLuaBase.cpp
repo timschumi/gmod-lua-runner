@@ -30,6 +30,13 @@ CLuaBase::CLuaBase()
     lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
     lua_settable(lua_state, -3);
 
+#define REGISTER_CONVAR_FLAG(name, value) \
+    lua_pushstring(lua_state, #name);     \
+    lua_pushnumber(lua_state, value);     \
+    lua_settable(lua_state, -3);
+    ENUMERATE_CONVAR_FLAGS(REGISTER_CONVAR_FLAG)
+#undef REGISTER_CONVAR_FLAG
+
     lua_pop(lua_state, 1);
 
 #define REGISTER_METATABLE_START(name)   \

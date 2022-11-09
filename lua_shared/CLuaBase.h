@@ -44,6 +44,32 @@
     TABLE_END()                                                                                \
     METATABLE_END()
 
+// Taken from https://wiki.facepunch.com/gmod/Enums/FCVAR.
+#define ENUMERATE_CONVAR_FLAGS(E)           \
+    E(FCVAR_NONE, 0)                        \
+    E(FCVAR_UNREGISTERED, 1)                \
+    E(FCVAR_GAMEDLL, 4)                     \
+    E(FCVAR_CLIENTDLL, 8)                   \
+    E(FCVAR_PROTECTED, 32)                  \
+    E(FCVAR_SPONLY, 64)                     \
+    E(FCVAR_ARCHIVE, 128)                   \
+    E(FCVAR_NOTIFY, 256)                    \
+    E(FCVAR_USERINFO, 512)                  \
+    E(FCVAR_PRINTABLEONLY, 1024)            \
+    E(FCVAR_UNLOGGED, 2048)                 \
+    E(FCVAR_NEVER_AS_STRING, 4096)          \
+    E(FCVAR_REPLICATED, 8192)               \
+    E(FCVAR_CHEAT, 16384)                   \
+    E(FCVAR_DEMO, 65536)                    \
+    E(FCVAR_DONTRECORD, 131072)             \
+    E(FCVAR_LUA_CLIENT, 262144)             \
+    E(FCVAR_LUA_SERVER, 524288)             \
+    E(FCVAR_NOT_CONNECTED, 4194304)         \
+    E(FCVAR_ARCHIVE_XBOX, 16777216)         \
+    E(FCVAR_SERVER_CAN_EXECUTE, 268435456)  \
+    E(FCVAR_SERVER_CANNOT_QUERY, 536870912) \
+    E(FCVAR_CLIENTCMD_CAN_EXECUTE, 1073741824)
+
 class CLuaBase : public GarrysMod::Lua::ILuaBase {
 public:
     CLuaBase();
@@ -84,6 +110,11 @@ private:
     std::map<std::string, Timer> timers;
 
     // TODO: Maybe move this to libtier1.
+    enum ConVarFlags {
+#define DEFINE_ENUM_ENTRY(name, value) name = value,
+        ENUMERATE_CONVAR_FLAGS(DEFINE_ENUM_ENTRY)
+#undef DEFINE_ENUM_ENTRY
+    };
     struct ConVar {
         std::string value;
         long flags;

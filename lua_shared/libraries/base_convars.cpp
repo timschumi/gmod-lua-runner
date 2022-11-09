@@ -2,8 +2,6 @@
 #include <lua.hpp>
 #include <optional>
 
-#define FCVAR_NONE 0
-
 int CLuaBase::lua$meta$ConVar_GetBool()
 {
     auto convar = static_cast<ConVar**>(lua_touserdata(lua_state, 1));
