@@ -1,6 +1,7 @@
 #include "CLuaBase.h"
 #include <lua.hpp>
 
+// https://wiki.facepunch.com/gmod/coroutine.create
 int CLuaBase::lua$coroutine_create()
 {
     auto coroutine = lua_newthread(lua_state);
@@ -11,6 +12,7 @@ int CLuaBase::lua$coroutine_create()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/coroutine.resume
 int CLuaBase::lua$coroutine_resume()
 {
     int number_of_arguments = lua_gettop(lua_state) - 1;
@@ -27,6 +29,7 @@ int CLuaBase::lua$coroutine_resume()
     return 1 + number_of_returned_values;
 }
 
+// https://wiki.facepunch.com/gmod/coroutine.running
 int CLuaBase::lua$coroutine_running()
 {
     bool is_main_thread = lua_pushthread(lua_state);
@@ -37,6 +40,7 @@ int CLuaBase::lua$coroutine_running()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/coroutine.yield
 int CLuaBase::lua$coroutine_yield()
 {
     int number_of_arguments = lua_gettop(lua_state);

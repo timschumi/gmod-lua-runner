@@ -24,6 +24,7 @@ static bool string_matches_wildcard(std::string_view string, std::string_view wi
     return string_matches_wildcard(string.substr(1), wildcard.substr(1));
 }
 
+// https://wiki.facepunch.com/gmod/file.Find
 int CLuaBase::lua$file_Find()
 {
     std::string name = lua_tostring(lua_state, 1);

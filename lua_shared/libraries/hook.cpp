@@ -1,6 +1,7 @@
 #include "CLuaBase.h"
 #include <lua.hpp>
 
+// https://wiki.facepunch.com/gmod/hook.Add
 int CLuaBase::lua$hook_Add()
 {
     std::string event_name = lua_tostring(lua_state, 1);
@@ -22,6 +23,7 @@ int CLuaBase::lua$hook_Add()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/hook.Call
 int CLuaBase::lua$hook_Call()
 {
     std::string event_name = lua_tostring(lua_state, 1);
@@ -58,6 +60,7 @@ int CLuaBase::lua$hook_Call()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/hook.GetTable
 int CLuaBase::lua$hook_GetTable()
 {
     lua_createtable(lua_state, 0, 0);
@@ -76,6 +79,7 @@ int CLuaBase::lua$hook_GetTable()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/hook.Remove
 int CLuaBase::lua$hook_Remove()
 {
     std::string event_name = lua_tostring(lua_state, 1);
@@ -92,6 +96,7 @@ int CLuaBase::lua$hook_Remove()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/hook.Run
 int CLuaBase::lua$hook_Run()
 {
     std::string event_name = lua_tostring(lua_state, 1);

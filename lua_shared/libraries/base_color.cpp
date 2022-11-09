@@ -1,6 +1,7 @@
 #include "CLuaBase.h"
 #include <lua.hpp>
 
+// https://wiki.facepunch.com/gmod/Global.Color
 int CLuaBase::lua$meta$Color_eq()
 {
 #define COMPARE_INDEX(name)                     \
@@ -22,6 +23,7 @@ int CLuaBase::lua$meta$Color_eq()
 #undef COMPARE_INDEX
 }
 
+// https://wiki.facepunch.com/gmod/Global.Color
 int CLuaBase::lua$Color()
 {
     int number_of_arguments = lua_gettop(lua_state);

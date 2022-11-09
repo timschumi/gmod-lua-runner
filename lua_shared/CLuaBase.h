@@ -49,7 +49,7 @@
     TABLE_END()                                                                                \
     METATABLE_END()
 
-// Taken from https://wiki.facepunch.com/gmod/Enums/FCVAR.
+// https://wiki.facepunch.com/gmod/Enums/FCVAR
 #define ENUMERATE_CONVAR_FLAGS(E)           \
     E(FCVAR_NONE, 0)                        \
     E(FCVAR_UNREGISTERED, 1)                \

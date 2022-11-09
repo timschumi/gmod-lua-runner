@@ -2,6 +2,7 @@
 #include <lua.hpp>
 #include <optional>
 
+// https://wiki.facepunch.com/gmod/ConVar:GetBool
 int CLuaBase::lua$meta$ConVar_GetBool()
 {
     auto convar = static_cast<ConVar**>(lua_touserdata(lua_state, 1));
@@ -12,6 +13,7 @@ int CLuaBase::lua$meta$ConVar_GetBool()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/ConVar:SetBool
 int CLuaBase::lua$meta$ConVar_SetBool()
 {
     auto convar = static_cast<ConVar**>(lua_touserdata(lua_state, 1));
@@ -22,6 +24,7 @@ int CLuaBase::lua$meta$ConVar_SetBool()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/Global.CreateConVar
 int CLuaBase::lua$CreateConVar()
 {
     int number_of_arguments = lua_gettop(lua_state);
@@ -45,6 +48,7 @@ int CLuaBase::lua$CreateConVar()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.GetConVar
 int CLuaBase::lua$GetConVar()
 {
     std::string name = lua_tostring(lua_state, 1);

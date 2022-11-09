@@ -2,12 +2,14 @@
 #include <dlfcn.h>
 #include <lua.hpp>
 
+// https://wiki.facepunch.com/gmod/Global.CurTime
 int CLuaBase::lua$CurTime()
 {
     lua_pushnumber(lua_state, uptime);
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.include
 int CLuaBase::lua$include()
 {
     std::string path = (std::string) "garrysmod/lua/" + lua_tostring(lua_state, 1);
@@ -21,6 +23,7 @@ int CLuaBase::lua$include()
     return lua_gettop(lua_state) - initial_top;
 }
 
+// https://wiki.facepunch.com/gmod/Global.print
 int CLuaBase::lua$print()
 {
     int nargs = lua_gettop(lua_state);
@@ -66,6 +69,7 @@ int CLuaBase::lua$print()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/Global.PrintTable
 int CLuaBase::lua$PrintTable()
 {
     // Note: `done` is ignored.
@@ -107,6 +111,7 @@ int CLuaBase::lua$PrintTable()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/Global.require
 int CLuaBase::lua$require()
 {
     char const* format = "garrysmod/lua/bin/gmsv_%s_" GMOD_MODULE_ARCH ".dll";

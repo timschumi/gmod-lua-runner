@@ -1,6 +1,7 @@
 #include "CLuaBase.h"
 #include <lua.hpp>
 
+// https://wiki.facepunch.com/gmod/table.Add
 int CLuaBase::lua$table_Add()
 {
     lua_pushnil(lua_state);

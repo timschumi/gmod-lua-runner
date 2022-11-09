@@ -1,6 +1,7 @@
 #include "CLuaBase.h"
 #include <lua.hpp>
 
+// https://wiki.facepunch.com/gmod/timer.Create
 int CLuaBase::lua$timer_Create()
 {
     std::string identifier = lua_tostring(lua_state, 1);
