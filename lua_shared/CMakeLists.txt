@@ -1,7 +1,7 @@
 set(SOURCES
     CLuaBase.cpp
     libraries/base.cpp
-    libraries/convars.cpp
+    libraries/base_convars.cpp
     libraries/coroutine.cpp
     libraries/hook.cpp
     libraries/table.cpp
