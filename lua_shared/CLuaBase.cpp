@@ -65,6 +65,33 @@ CLuaBase::RunFileResult CLuaBase::load_and_run_file(char const* path)
     return RunFileResult::Success;
 }
 
+CLuaBase::RunFileResult CLuaBase::load_and_run_file_or_show_error(char const* path)
+{
+    auto result = load_and_run_file(path);
+
+    switch (result) {
+    case CLuaBase::SyntaxError:
+        fprintf(stderr, "Syntax Error: %s\n", CheckString(-1));
+        break;
+    case CLuaBase::MemoryAllocationError:
+        fprintf(stderr, "Memory Allocation Error: %s\n", CheckString(-1));
+        break;
+    case CLuaBase::FileError:
+        fprintf(stderr, "File Error: %s\n", CheckString(-1));
+        break;
+    case CLuaBase::RuntimeError:
+        fprintf(stderr, "Runtime Error: %s\n", CheckString(-1));
+        break;
+    case CLuaBase::ErrorError:
+        fprintf(stderr, "Error while handling Errors: %s\n", CheckString(-1));
+        break;
+    default:
+        break;
+    }
+
+    return result;
+}
+
 bool CLuaBase::is_active()
 {
     for (auto coroutine : coroutines) {

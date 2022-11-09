@@ -28,28 +28,12 @@ int main(int argc, char const** argv)
 
     CLuaBase lua_base;
 
-    switch (lua_base.load_and_run_file(script_path.c_str())) {
-    case CLuaBase::Success: {
-        int return_value = static_cast<int>(lua_base.CheckNumber(-1));
-        lua_base.run_event_loop();
-        return return_value;
-    }
-    case CLuaBase::SyntaxError:
-        fprintf(stderr, "Syntax Error: %s\n", lua_base.CheckString(-1));
-        return 1;
-    case CLuaBase::MemoryAllocationError:
-        fprintf(stderr, "Memory Allocation Error: %s\n", lua_base.CheckString(-1));
-        return 1;
-    case CLuaBase::FileError:
-        fprintf(stderr, "File Error: %s\n", lua_base.CheckString(-1));
-        return 1;
-    case CLuaBase::RuntimeError:
-        fprintf(stderr, "Runtime Error: %s\n", lua_base.CheckString(-1));
-        return 1;
-    case CLuaBase::ErrorError:
-        fprintf(stderr, "Error while handling Errors: %s\n", lua_base.CheckString(-1));
-        return 1;
-    }
+    auto result = lua_base.load_and_run_file_or_show_error(script_path.c_str());
 
-    return 0;
+    if (result != CLuaBase::Success)
+        return 1;
+
+    int return_value = static_cast<int>(lua_base.CheckNumber(-1));
+    lua_base.run_event_loop();
+    return return_value;
 }

@@ -42,6 +42,7 @@ public:
     };
 
     RunFileResult load_and_run_file(char const* path);
+    RunFileResult load_and_run_file_or_show_error(char const* path);
     bool is_active();
     void run_event_loop();
 
