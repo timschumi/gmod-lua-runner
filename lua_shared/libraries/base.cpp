@@ -69,7 +69,7 @@ int CLuaBase::lua$print()
 int CLuaBase::lua$PrintTable()
 {
     // Note: `done` is ignored.
-    // FIXME: Handle non-string keys and values.
+    // FIXME: Handle non-string keys and values properly.
     int indent = lua_tonumber(lua_state, 2);
 
     lua_pushnil(lua_state);
@@ -77,17 +77,29 @@ int CLuaBase::lua$PrintTable()
         for (int i = 0; i < indent; i++)
             printf("\t");
 
-        auto key = lua_tostring(lua_state, -2);
+        std::string key;
+
+        switch (lua_type(lua_state, -2)) {
+        case LUA_TSTRING:
+            key = lua_tostring(lua_state, -2);
+            break;
+        case LUA_TNUMBER:
+            key = std::to_string(lua_tonumber(lua_state, -2));
+            break;
+        default:
+            key = "<unknown type>";
+            break;
+        }
 
         if (lua_type(lua_state, -1) == LUA_TTABLE) {
-            printf("%s:\n", key);
+            printf("%s:\n", key.c_str());
             lua_pushcfunction(lua_state, CLuaBase::lua$PrintTable$entry);
             lua_pushvalue(lua_state, -2);
             lua_pushnumber(lua_state, indent + 2);
             lua_call(lua_state, 2, 0);
         } else {
             auto value = lua_tostring(lua_state, -1);
-            printf("%s\t=\t%s\n", key, value);
+            printf("%s\t=\t%s\n", key.c_str(), value);
         }
 
         lua_pop(lua_state, 1);
