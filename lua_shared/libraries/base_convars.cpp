@@ -34,3 +34,21 @@ int CLuaBase::lua$CreateConVar()
 
     return 1;
 }
+
+int CLuaBase::lua$GetConVar()
+{
+    std::string name = lua_tostring(lua_state, 1);
+
+    if (!convars.contains(name)) {
+        lua_pushnil(lua_state);
+        return 1;
+    }
+
+    ConVar* convar = &convars[name];
+
+    auto userdata = static_cast<ConVar**>(lua_newuserdata(lua_state, sizeof(void*)));
+    *userdata = convar;
+    luaL_setmetatable(lua_state, "ConVar");
+
+    return 1;
+}

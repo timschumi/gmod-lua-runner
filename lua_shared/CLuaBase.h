@@ -10,6 +10,7 @@
     FUNCTION("Color", Color)                                        \
     FUNCTION("CreateConVar", CreateConVar)                          \
     FUNCTION("CurTime", CurTime)                                    \
+    FUNCTION("GetConVar", GetConVar)                                \
     FUNCTION("include", include)                                    \
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", PrintTable)                              \
