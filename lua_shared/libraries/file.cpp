@@ -3,27 +3,6 @@
 #include <filesystem>
 #include <lua.hpp>
 
-// Note: This is probably horribly inefficient.
-static bool string_matches_wildcard(std::string_view string, std::string_view wildcard)
-{
-    if (string.length() == 0 && wildcard.length() == 0)
-        return true;
-
-    if (wildcard.length() == 0)
-        return false;
-
-    if (wildcard.starts_with('*'))
-        return string_matches_wildcard(string.substr(1), wildcard.substr(1)) || string_matches_wildcard(string.substr(1), wildcard);
-
-    if (string.length() == 0)
-        return false;
-
-    if (string[0] != wildcard[0])
-        return false;
-
-    return string_matches_wildcard(string.substr(1), wildcard.substr(1));
-}
-
 // https://wiki.facepunch.com/gmod/file.Find
 int CLuaBase::lua$file_Find()
 {
@@ -44,14 +23,19 @@ int CLuaBase::lua$file_Find()
     lua_createtable(lua_state, 0, 0);
 
     for (auto const& directory_path : paths_to_search) {
-        for (auto const& dir_entry : std::filesystem::recursive_directory_iterator { directory_path }) {
+        auto full_name = directory_path;
+        full_name.append("/");
+        full_name.append(name);
+
+        assert(full_name.ends_with("/*"));
+
+        full_name = full_name.substr(0, full_name.size() - 2);
+
+        for (auto const& dir_entry : std::filesystem::directory_iterator { full_name }) {
             // Remove search prefix from the file path.
             auto file_path = dir_entry.path().generic_string();
-            assert(file_path.starts_with(directory_path + "/"));
-            file_path = file_path.substr(directory_path.length() + 1);
-
-            if (!string_matches_wildcard(file_path, name))
-                continue;
+            assert(file_path.starts_with(full_name + "/"));
+            file_path = file_path.substr(full_name.length() + 1);
 
             if (dir_entry.is_directory())
                 lua_pushvalue(lua_state, -1);
