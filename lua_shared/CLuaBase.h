@@ -7,6 +7,7 @@
 #include <string>
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
+    FUNCTION("Color", color)                                        \
     FUNCTION("CreateConVar", create_con_var)                        \
     FUNCTION("CurTime", cur_time)                                   \
     FUNCTION("include", include)                                    \
@@ -34,6 +35,9 @@
     MODULE_END()
 
 #define ENUMERATE_METATABLES(METATABLE_START, METATABLE_END, TABLE_START, TABLE_END, FUNCTION) \
+    METATABLE_START("Color")                                                                   \
+    FUNCTION("__eq", color_eq)                                                                 \
+    METATABLE_END()                                                                            \
     METATABLE_START("ConVar")                                                                  \
     TABLE_START("__index")                                                                     \
     FUNCTION("GetBool", con_var_get_bool)                                                      \
