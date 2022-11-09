@@ -49,7 +49,7 @@ CLuaBase::RunFileResult CLuaBase::load_and_run_file(char const* path)
         break;
     }
 
-    ret = lua_pcall(lua_state, 0, 1, 0);
+    ret = lua_pcall(lua_state, 0, LUA_MULTRET, 0);
 
     switch (ret) {
     case LUA_ERRRUN:

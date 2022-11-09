@@ -33,12 +33,13 @@ int main(int argc, char const** argv)
             return 1;
     }
 
+    auto top_before_script = lua_base.Top();
     auto result = lua_base.load_and_run_file_or_show_error(script_path.c_str());
 
     if (result != CLuaBase::Success)
         return 1;
 
-    int return_value = static_cast<int>(lua_base.CheckNumber(-1));
+    int return_value = lua_base.Top() > top_before_script ? static_cast<int>(lua_base.CheckNumber(-1)) : 0;
     lua_base.run_event_loop();
     return return_value;
 }
