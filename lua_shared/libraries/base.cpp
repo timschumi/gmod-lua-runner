@@ -9,6 +9,20 @@ int CLuaBase::lua$CurTime()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.getfenv
+int CLuaBase::lua$getfenv()
+{
+    if (lua_type(lua_state, 1) == LUA_TNUMBER) {
+        lua_Debug ar {};
+        lua_getstack(lua_state, lua_tonumber(lua_state, 1), &ar);
+        lua_getinfo(lua_state, "f", &ar);
+        lua_replace(lua_state, 1);
+    }
+
+    lua_getfenv(lua_state, 1);
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.include
 int CLuaBase::lua$include()
 {

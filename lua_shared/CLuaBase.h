@@ -11,6 +11,7 @@
     FUNCTION("CreateConVar", CreateConVar)                          \
     FUNCTION("CurTime", CurTime)                                    \
     FUNCTION("GetConVar", GetConVar)                                \
+    FUNCTION("getfenv", getfenv)                                    \
     FUNCTION("include", include)                                    \
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", PrintTable)                              \
