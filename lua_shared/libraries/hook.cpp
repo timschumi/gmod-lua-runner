@@ -33,10 +33,16 @@ int CLuaBase::lua$hook_Call()
     if (!registered_hooks.contains(event_name))
         return 0;
 
+    std::list<int> hooks_to_be_run;
+
     for (auto const& hook : registered_hooks[event_name]) {
+        hooks_to_be_run.push_back(hook.second);
+    }
+
+    for (auto hook : hooks_to_be_run) {
         int stack_top_without_args = lua_gettop(lua_state);
 
-        lua_rawgeti(lua_state, LUA_REGISTRYINDEX, hook.second);
+        lua_rawgeti(lua_state, LUA_REGISTRYINDEX, hook);
         for (int i = 1; i <= number_of_arguments; i++)
             lua_pushvalue(lua_state, 2 + i);
         lua_call(lua_state, number_of_arguments, LUA_MULTRET);
