@@ -29,37 +29,11 @@ int CLuaBase::lua$print()
     int nargs = lua_gettop(lua_state);
 
     for (int i = 1; i <= nargs; i++) {
-        int type = lua_type(lua_state, i);
-        switch (type) {
-        case LUA_TNIL:
-            printf("nil");
-            break;
-        case LUA_TBOOLEAN:
-            printf(lua_toboolean(lua_state, i) ? "true" : "false");
-            break;
-        case LUA_TNUMBER:
-            printf("%g", lua_tonumber(lua_state, i));
-            break;
-        case LUA_TSTRING:
-            printf("%s", lua_tostring(lua_state, i));
-            break;
-        case LUA_TUSERDATA: {
-            void* userdata = lua_touserdata(lua_state, i);
-            lua_getmetatable(lua_state, i);
-            lua_pushstring(lua_state, "__name");
-            lua_rawget(lua_state, -2);
-            char const* name = lua_tostring(lua_state, -1);
-            lua_pop(lua_state, 2);
-            printf("<%p:%s>", userdata, name);
-            break;
-        }
-        case LUA_TTHREAD:
-            printf("<thread>");
-            break;
-        default:
-            printf("<unknown type %d>", type);
-            break;
-        }
+        lua_pushcfunction(lua_state, lua$tostring$entry);
+        lua_pushvalue(lua_state, i);
+        lua_call(lua_state, 1, 1);
+        printf("%s", lua_tostring(lua_state, -1));
+        lua_pop(lua_state, 1);
 
         if (i < nargs)
             printf("\t");
@@ -73,7 +47,6 @@ int CLuaBase::lua$print()
 int CLuaBase::lua$PrintTable()
 {
     // Note: `done` is ignored.
-    // FIXME: Handle non-string keys and values properly.
     int indent = lua_tonumber(lua_state, 2);
 
     lua_pushnil(lua_state);
@@ -81,29 +54,25 @@ int CLuaBase::lua$PrintTable()
         for (int i = 0; i < indent; i++)
             printf("\t");
 
-        std::string key;
-
-        switch (lua_type(lua_state, -2)) {
-        case LUA_TSTRING:
-            key = lua_tostring(lua_state, -2);
-            break;
-        case LUA_TNUMBER:
-            key = std::to_string(lua_tonumber(lua_state, -2));
-            break;
-        default:
-            key = "<unknown type>";
-            break;
-        }
+        lua_pushcfunction(lua_state, lua$tostring$entry);
+        lua_pushvalue(lua_state, -3);
+        lua_call(lua_state, 1, 1);
+        char const* key = lua_tostring(lua_state, -1);
+        lua_pop(lua_state, 1);
 
         if (lua_type(lua_state, -1) == LUA_TTABLE) {
-            printf("%s:\n", key.c_str());
+            printf("%s:\n", key);
             lua_pushcfunction(lua_state, CLuaBase::lua$PrintTable$entry);
             lua_pushvalue(lua_state, -2);
             lua_pushnumber(lua_state, indent + 2);
             lua_call(lua_state, 2, 0);
         } else {
-            auto value = lua_tostring(lua_state, -1);
-            printf("%s\t=\t%s\n", key.c_str(), value);
+            lua_pushcfunction(lua_state, lua$tostring$entry);
+            lua_pushvalue(lua_state, -2);
+            lua_call(lua_state, 1, 1);
+            char const* value = lua_tostring(lua_state, -1);
+            lua_pop(lua_state, 1);
+            printf("%s\t=\t%s\n", key, value);
         }
 
         lua_pop(lua_state, 1);
@@ -137,6 +106,45 @@ int CLuaBase::lua$require()
     loaded_module_handles.push_back(library_handle);
 
     return 0;
+}
+
+// https://wiki.facepunch.com/gmod/Global.tostring
+int CLuaBase::lua$tostring()
+{
+    // FIXME: This should use __tostring where applicable.
+    auto format_value = [&](char* buffer, size_t buffer_size) {
+        int type = lua_type(lua_state, 1);
+        switch (type) {
+        case LUA_TNIL:
+            return snprintf(buffer, buffer_size, "nil");
+        case LUA_TBOOLEAN:
+            return snprintf(buffer, buffer_size, lua_toboolean(lua_state, 1) ? "true" : "false");
+        case LUA_TNUMBER:
+            return snprintf(buffer, buffer_size, "%g", lua_tonumber(lua_state, 1));
+        case LUA_TSTRING:
+            return snprintf(buffer, buffer_size, "%s", lua_tostring(lua_state, 1));
+        case LUA_TUSERDATA: {
+            void* userdata = lua_touserdata(lua_state, 1);
+            lua_getmetatable(lua_state, 1);
+            lua_pushstring(lua_state, "__name");
+            lua_rawget(lua_state, -2);
+            char const* name = lua_tostring(lua_state, -1);
+            lua_pop(lua_state, 2);
+            return snprintf(buffer, buffer_size, "<%p:%s>", userdata, name);
+        }
+        case LUA_TTHREAD:
+            return snprintf(buffer, buffer_size, "<thread>");
+        default:
+            return snprintf(buffer, buffer_size, "<unknown type %d>", type);
+        }
+    };
+
+    int required_buffer_size = format_value(nullptr, 0) + 1;
+    char buffer[required_buffer_size];
+    format_value(buffer, required_buffer_size);
+    lua_pushstring(lua_state, buffer);
+
+    return 1;
 }
 
 void CLuaBase::unload_modules()
