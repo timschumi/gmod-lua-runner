@@ -7,6 +7,7 @@
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
     FUNCTION("CurTime", cur_time)                                   \
+    FUNCTION("include", include)                                    \
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", print_table)                             \
     FUNCTION("require", require)                                    \

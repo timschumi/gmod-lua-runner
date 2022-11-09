@@ -8,6 +8,19 @@ int CLuaBase::lua$cur_time()
     return 1;
 }
 
+int CLuaBase::lua$include()
+{
+    std::string path = (std::string) "garrysmod/lua/" + lua_tostring(lua_state, 1);
+    int initial_top = lua_gettop(lua_state);
+
+    if (luaL_loadfile(lua_state, path.c_str()) != LUA_OK)
+        return lua_error(lua_state);
+
+    lua_call(lua_state, 0, LUA_MULTRET);
+
+    return lua_gettop(lua_state) - initial_top;
+}
+
 int CLuaBase::lua$print()
 {
     int nargs = lua_gettop(lua_state);
