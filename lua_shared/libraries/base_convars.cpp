@@ -12,6 +12,16 @@ int CLuaBase::lua$meta$ConVar_GetBool()
     return 1;
 }
 
+int CLuaBase::lua$meta$ConVar_SetBool()
+{
+    auto convar = static_cast<ConVar**>(lua_touserdata(lua_state, 1));
+    auto value = lua_toboolean(lua_state, 2);
+
+    (*convar)->value = value ? "1" : "0";
+
+    return 0;
+}
+
 int CLuaBase::lua$CreateConVar()
 {
     int number_of_arguments = lua_gettop(lua_state);

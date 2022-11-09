@@ -42,6 +42,7 @@
     METATABLE_START("ConVar")                                                                  \
     TABLE_START("__index")                                                                     \
     FUNCTION("GetBool", ConVar_GetBool)                                                        \
+    FUNCTION("SetBool", ConVar_SetBool)                                                        \
     TABLE_END()                                                                                \
     METATABLE_END()
 
