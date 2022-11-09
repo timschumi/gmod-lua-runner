@@ -26,6 +26,9 @@
     FUNCTION("Remove", hook_remove)                                 \
     FUNCTION("Run", hook_run)                                       \
     MODULE_END()                                                    \
+    MODULE_START("table")                                           \
+    FUNCTION("Add", table_add)                                      \
+    MODULE_END()                                                    \
     MODULE_START("timer")                                           \
     FUNCTION("Create", timer_create)                                \
     MODULE_END()

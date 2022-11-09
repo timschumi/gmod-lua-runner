@@ -4,6 +4,7 @@ set(SOURCES
     libraries/convars.cpp
     libraries/coroutine.cpp
     libraries/hook.cpp
+    libraries/table.cpp
     libraries/timer.cpp
 )
 
