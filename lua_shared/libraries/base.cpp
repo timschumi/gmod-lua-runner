@@ -92,6 +92,29 @@ int CLuaBase::lua$MsgC()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/Global.next
+int CLuaBase::lua$next()
+{
+    if (lua_gettop(lua_state) >= 2)
+        lua_pushvalue(lua_state, 2);
+    else
+        lua_pushnil(lua_state);
+    if (lua_next(lua_state, 1) == 0) {
+        lua_pushnil(lua_state);
+        lua_pushnil(lua_state);
+    }
+    return 2;
+}
+
+// https://wiki.facepunch.com/gmod/Global.pairs
+int CLuaBase::lua$pairs()
+{
+    lua_pushcfunction(lua_state, lua$next$entry);
+    lua_pushvalue(lua_state, 1);
+    lua_pushnil(lua_state);
+    return 3;
+}
+
 // https://wiki.facepunch.com/gmod/Global.print
 int CLuaBase::lua$print()
 {

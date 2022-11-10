@@ -16,6 +16,8 @@
     FUNCTION("ipairs", ipairs)                                      \
     FUNCTION("istable", istable)                                    \
     FUNCTION("MsgC", MsgC)                                          \
+    FUNCTION("next", next)                                          \
+    FUNCTION("pairs", pairs)                                        \
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", PrintTable)                              \
     FUNCTION("require", require)                                    \
