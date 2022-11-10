@@ -44,6 +44,7 @@
     MODULE_START("table")                                           \
     FUNCTION("Add", table_Add)                                      \
     FUNCTION("Count", table_Count)                                  \
+    FUNCTION("Inherit", table_Inherit)                              \
     FUNCTION("insert", table_insert)                                \
     FUNCTION("remove", table_remove)                                \
     MODULE_END()                                                    \
