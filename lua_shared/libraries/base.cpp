@@ -282,10 +282,16 @@ int CLuaBase::lua$xpcall()
         lua_pushvalue(lua_state, 2 + i);
     int ret = lua_pcall(lua_state, number_of_varargs, LUA_MULTRET, 2);
 
-    if (ret == 0)
-        return lua_gettop(lua_state) - top_of_stack;
+    if (ret == 0) {
+        int number_of_return_values = lua_gettop(lua_state) - top_of_stack + 1;
+        lua_pushboolean(lua_state, true);
+        lua_insert(lua_state, -number_of_return_values);
+        return number_of_return_values;
+    }
 
-    return 1;
+    lua_pushboolean(lua_state, false);
+    lua_insert(lua_state, -2);
+    return 2;
 }
 
 void CLuaBase::unload_modules()
