@@ -15,6 +15,36 @@ int CLuaBase::lua$table_Add()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/table.concat
+int CLuaBase::lua$table_concat()
+{
+    std::string concatenator = lua_gettop(lua_state) >= 2 ? lua_tostring(lua_state, 2) : "";
+    double start_position = lua_gettop(lua_state) >= 3 ? lua_tonumber(lua_state, 3) : 1;
+    double end_position = lua_gettop(lua_state) >= 4 ? lua_tonumber(lua_state, 4) : lua_objlen(lua_state, 1);
+    std::string result;
+
+    while (start_position <= end_position) {
+        lua_pushcfunction(lua_state, lua$tostring$entry);
+
+        lua_pushnumber(lua_state, start_position);
+        lua_gettable(lua_state, 1);
+
+        lua_call(lua_state, 1, 1);
+
+        char const* value = lua_tostring(lua_state, -1);
+        result += value;
+        lua_pop(lua_state, 1);
+
+        if (start_position < end_position)
+            result += concatenator;
+
+        start_position++;
+    }
+
+    lua_pushstring(lua_state, result.c_str());
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/table.Count
 int CLuaBase::lua$table_Count()
 {

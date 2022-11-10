@@ -49,6 +49,7 @@
     MODULE_END()                                                    \
     MODULE_START("table")                                           \
     FUNCTION("Add", table_Add)                                      \
+    FUNCTION("concat", table_concat)                                \
     FUNCTION("Count", table_Count)                                  \
     FUNCTION("Inherit", table_Inherit)                              \
     FUNCTION("insert", table_insert)                                \
