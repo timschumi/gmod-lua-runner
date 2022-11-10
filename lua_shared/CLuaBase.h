@@ -19,6 +19,7 @@
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", PrintTable)                              \
     FUNCTION("require", require)                                    \
+    FUNCTION("setmetatable", setmetatable)                          \
     FUNCTION("tostring", tostring)                                  \
     MODULE_START("coroutine")                                       \
     FUNCTION("create", coroutine_create)                            \

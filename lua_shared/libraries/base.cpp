@@ -177,6 +177,16 @@ int CLuaBase::lua$require()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/Global.setmetatable
+int CLuaBase::lua$setmetatable()
+{
+    lua_pushvalue(lua_state, 2);
+    lua_setmetatable(lua_state, 1);
+
+    lua_pushvalue(lua_state, 1);
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.tostring
 int CLuaBase::lua$tostring()
 {
