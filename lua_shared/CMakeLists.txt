@@ -4,6 +4,7 @@ set(SOURCES
     libraries/base_color.cpp
     libraries/base_convars.cpp
     libraries/coroutine.cpp
+    libraries/debug.cpp
     libraries/file.cpp
     libraries/hook.cpp
     libraries/string.cpp
