@@ -6,6 +6,7 @@ set(SOURCES
     libraries/coroutine.cpp
     libraries/file.cpp
     libraries/hook.cpp
+    libraries/string.cpp
     libraries/table.cpp
     libraries/timer.cpp
 )

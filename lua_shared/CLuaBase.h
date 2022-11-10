@@ -35,6 +35,9 @@
     FUNCTION("Remove", hook_Remove)                                 \
     FUNCTION("Run", hook_Run)                                       \
     MODULE_END()                                                    \
+    MODULE_START("string")                                          \
+    FUNCTION("EndsWith", string_EndsWith)                           \
+    MODULE_END()                                                    \
     MODULE_START("table")                                           \
     FUNCTION("Add", table_Add)                                      \
     FUNCTION("remove", table_remove)                                \
