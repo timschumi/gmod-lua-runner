@@ -49,6 +49,7 @@
     FUNCTION("EndsWith", string_EndsWith)                           \
     FUNCTION("match", string_match)                                 \
     FUNCTION("Split", string_Split)                                 \
+    FUNCTION("StartWith", string_StartWith)                         \
     MODULE_END()                                                    \
     MODULE_START("table")                                           \
     FUNCTION("Add", table_Add)                                      \

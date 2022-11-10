@@ -74,3 +74,13 @@ int CLuaBase::lua$string_Split()
 
     return 1;
 }
+
+// https://wiki.facepunch.com/gmod/string.StartWith
+int CLuaBase::lua$string_StartWith()
+{
+    std::string str = lua_tostring(lua_state, 1);
+    std::string start = lua_tostring(lua_state, 2);
+
+    lua_pushboolean(lua_state, str.starts_with(start));
+    return 1;
+}
