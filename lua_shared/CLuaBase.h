@@ -34,6 +34,7 @@
     MODULE_END()                                                    \
     MODULE_START("debug")                                           \
     FUNCTION("getinfo", debug_getinfo)                              \
+    FUNCTION("getlocal", debug_getlocal)                            \
     MODULE_END()                                                    \
     MODULE_START("file")                                            \
     FUNCTION("Find", file_Find)                                     \

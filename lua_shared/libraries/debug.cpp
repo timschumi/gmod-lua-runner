@@ -82,3 +82,27 @@ int CLuaBase::lua$debug_getinfo()
 
     return 1;
 }
+
+// https://wiki.facepunch.com/gmod/debug.getlocal
+int CLuaBase::lua$debug_getlocal()
+{
+    // FIXME: Support for passing functions to get the parameter names.
+    bool passed_thread = lua_gettop(lua_state) >= 3;
+    lua_State* thread = passed_thread ? lua_tothread(lua_state, 1) : lua_state;
+    int level = lua_tonumber(lua_state, passed_thread ? 2 : 1);
+    int index = lua_tonumber(lua_state, passed_thread ? 3 : 2);
+
+    lua_Debug ar {};
+    lua_getstack(thread, level, &ar);
+    char const* name = lua_getlocal(lua_state, &ar, index);
+
+    if (name != nullptr) {
+        lua_pushstring(lua_state, name);
+        lua_insert(lua_state, -2);
+    } else {
+        lua_pushnil(lua_state);
+        lua_pushnil(lua_state);
+    }
+
+    return 2;
+}
