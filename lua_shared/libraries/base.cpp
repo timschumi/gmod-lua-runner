@@ -248,6 +248,23 @@ int CLuaBase::lua$tostring()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.xpcall
+int CLuaBase::lua$xpcall()
+{
+    int top_of_stack = lua_gettop(lua_state);
+    int number_of_varargs = top_of_stack - 2;
+
+    lua_pushvalue(lua_state, 1);
+    for (int i = 1; i <= number_of_varargs; i++)
+        lua_pushvalue(lua_state, 2 + i);
+    int ret = lua_pcall(lua_state, number_of_varargs, LUA_MULTRET, 2);
+
+    if (ret == 0)
+        return lua_gettop(lua_state) - top_of_stack;
+
+    return 1;
+}
+
 void CLuaBase::unload_modules()
 {
     for (auto handle : loaded_module_handles) {
