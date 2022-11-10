@@ -9,6 +9,25 @@ int CLuaBase::lua$CurTime()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.ErrorNoHaltWithStack
+int CLuaBase::lua$ErrorNoHaltWithStack()
+{
+    // FIXME: No errors and no stack yet.
+    int nargs = lua_gettop(lua_state);
+
+    for (int i = 1; i <= nargs; i++) {
+        lua_pushcfunction(lua_state, lua$tostring$entry);
+        lua_pushvalue(lua_state, i);
+        lua_call(lua_state, 1, 1);
+        printf("%s", lua_tostring(lua_state, -1));
+        lua_pop(lua_state, 1);
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
 // https://wiki.facepunch.com/gmod/Global.getfenv
 int CLuaBase::lua$getfenv()
 {

@@ -10,6 +10,7 @@
     FUNCTION("Color", Color)                                        \
     FUNCTION("CreateConVar", CreateConVar)                          \
     FUNCTION("CurTime", CurTime)                                    \
+    FUNCTION("ErrorNoHaltWithStack", ErrorNoHaltWithStack)          \
     FUNCTION("GetConVar", GetConVar)                                \
     FUNCTION("getfenv", getfenv)                                    \
     FUNCTION("include", include)                                    \
