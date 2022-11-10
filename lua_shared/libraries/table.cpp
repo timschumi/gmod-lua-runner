@@ -15,6 +15,26 @@ int CLuaBase::lua$table_Add()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/table.insert
+int CLuaBase::lua$table_insert()
+{
+    // FIXME: Actually shift down conflicting entries.
+    if (lua_gettop(lua_state) >= 3) {
+        lua_pushvalue(lua_state, 2);
+        lua_pushvalue(lua_state, 3);
+    } else {
+        lua_pushnumber(lua_state, lua_objlen(lua_state, 1) + 1);
+        lua_pushvalue(lua_state, 2);
+    }
+
+    lua_pushvalue(lua_state, -2);
+    lua_insert(lua_state, -2);
+
+    lua_settable(lua_state, 1);
+
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/table.remove
 int CLuaBase::lua$table_remove()
 {
