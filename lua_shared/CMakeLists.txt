@@ -7,6 +7,7 @@ set(SOURCES
     libraries/debug.cpp
     libraries/file.cpp
     libraries/hook.cpp
+    libraries/math.cpp
     libraries/string.cpp
     libraries/table.cpp
     libraries/timer.cpp

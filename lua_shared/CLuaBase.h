@@ -46,6 +46,9 @@
     FUNCTION("Remove", hook_Remove)                                 \
     FUNCTION("Run", hook_Run)                                       \
     MODULE_END()                                                    \
+    MODULE_START("math")                                            \
+    FUNCTION("min", math_min)                                       \
+    MODULE_END()                                                    \
     MODULE_START("string")                                          \
     FUNCTION("EndsWith", string_EndsWith)                           \
     FUNCTION("match", string_match)                                 \
