@@ -177,6 +177,28 @@ int CLuaBase::lua$require()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/Global.setfenv
+int CLuaBase::lua$setfenv()
+{
+    bool function_passed = true;
+    if (lua_type(lua_state, 1) == LUA_TNUMBER) {
+        function_passed = false;
+        lua_Debug ar {};
+        lua_getstack(lua_state, lua_tonumber(lua_state, 1), &ar);
+        lua_getinfo(lua_state, "f", &ar);
+        lua_replace(lua_state, 1);
+    }
+
+    lua_pushvalue(lua_state, 2);
+    lua_setfenv(lua_state, 1);
+
+    if (function_passed)
+        lua_pushvalue(lua_state, 1);
+    else
+        lua_pushnil(lua_state);
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.setmetatable
 int CLuaBase::lua$setmetatable()
 {
