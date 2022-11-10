@@ -51,6 +51,7 @@
     MODULE_END()                                                    \
     MODULE_START("string")                                          \
     FUNCTION("EndsWith", string_EndsWith)                           \
+    FUNCTION("Explode", string_Explode)                             \
     FUNCTION("match", string_match)                                 \
     FUNCTION("Split", string_Split)                                 \
     FUNCTION("StartWith", string_StartWith)                         \
