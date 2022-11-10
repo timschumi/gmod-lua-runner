@@ -91,18 +91,19 @@ int CLuaBase::lua$table_Inherit()
 // https://wiki.facepunch.com/gmod/table.insert
 int CLuaBase::lua$table_insert()
 {
-    // FIXME: Actually shift down conflicting entries.
-    if (lua_gettop(lua_state) >= 3) {
-        lua_pushvalue(lua_state, 2);
-        lua_pushvalue(lua_state, 3);
-    } else {
-        lua_pushnumber(lua_state, lua_objlen(lua_state, 1) + 1);
-        lua_pushvalue(lua_state, 2);
+    bool has_custom_target_index = lua_gettop(lua_state) >= 3;
+    size_t table_size = lua_objlen(lua_state, 1);
+    size_t target_index = has_custom_target_index ? lua_tonumber(lua_state, 2) : table_size + 1;
+
+    for (size_t i = table_size; i >= target_index; i--) {
+        lua_pushnumber(lua_state, i + 1);
+        lua_pushnumber(lua_state, i);
+        lua_gettable(lua_state, 1);
+        lua_settable(lua_state, 1);
     }
 
-    lua_pushvalue(lua_state, -2);
-    lua_insert(lua_state, -2);
-
+    lua_pushnumber(lua_state, target_index);
+    lua_pushvalue(lua_state, has_custom_target_index ? 3 : 2);
     lua_settable(lua_state, 1);
 
     return 1;
