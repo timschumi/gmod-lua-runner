@@ -61,6 +61,13 @@ int CLuaBase::lua$ipairs()
     return 3;
 }
 
+// https://wiki.facepunch.com/gmod/Global.istable
+int CLuaBase::lua$istable()
+{
+    lua_pushboolean(lua_state, lua_type(lua_state, 1) == LUA_TTABLE);
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.MsgC
 int CLuaBase::lua$MsgC()
 {

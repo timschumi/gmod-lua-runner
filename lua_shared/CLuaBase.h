@@ -14,6 +14,7 @@
     FUNCTION("getfenv", getfenv)                                    \
     FUNCTION("include", include)                                    \
     FUNCTION("ipairs", ipairs)                                      \
+    FUNCTION("istable", istable)                                    \
     FUNCTION("MsgC", MsgC)                                          \
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", PrintTable)                              \
