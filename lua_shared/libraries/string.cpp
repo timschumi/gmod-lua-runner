@@ -47,3 +47,30 @@ int CLuaBase::lua$string_match()
 
     return matches.size() - 1;
 }
+
+// https://wiki.facepunch.com/gmod/string.Split
+int CLuaBase::lua$string_Split()
+{
+    std::string input = lua_tostring(lua_state, 1);
+    std::string separator = lua_tostring(lua_state, 2);
+
+    lua_newtable(lua_state);
+
+    size_t next_start = 0;
+    double next_table_index = 1;
+    while (true) {
+        size_t separator_index = input.find(separator, next_start);
+
+        lua_pushnumber(lua_state, next_table_index);
+        lua_pushstring(lua_state, input.substr(next_start, separator_index - next_start).c_str());
+        lua_settable(lua_state, -3);
+
+        if (separator_index == std::string::npos)
+            break;
+
+        next_start = separator_index + separator.length();
+        next_table_index++;
+    }
+
+    return 1;
+}
