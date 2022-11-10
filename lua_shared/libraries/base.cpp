@@ -37,6 +37,30 @@ int CLuaBase::lua$include()
     return lua_gettop(lua_state) - initial_top;
 }
 
+static int ipairs_iterator(lua_State* lua_state)
+{
+    lua_pushnumber(lua_state, lua_tonumber(lua_state, 2) + 1);
+    lua_replace(lua_state, 2);
+
+    if (lua_tonumber(lua_state, 2) > lua_objlen(lua_state, 1))
+        return 0;
+
+    lua_pushvalue(lua_state, 2);
+    lua_pushvalue(lua_state, 2);
+    lua_gettable(lua_state, 1);
+
+    return 2;
+}
+
+// https://wiki.facepunch.com/gmod/Global.ipairs
+int CLuaBase::lua$ipairs()
+{
+    lua_pushcfunction(lua_state, ipairs_iterator);
+    lua_pushvalue(lua_state, 1);
+    lua_pushnumber(lua_state, 0);
+    return 3;
+}
+
 // https://wiki.facepunch.com/gmod/Global.MsgC
 int CLuaBase::lua$MsgC()
 {

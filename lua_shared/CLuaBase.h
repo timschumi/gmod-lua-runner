@@ -13,6 +13,7 @@
     FUNCTION("GetConVar", GetConVar)                                \
     FUNCTION("getfenv", getfenv)                                    \
     FUNCTION("include", include)                                    \
+    FUNCTION("ipairs", ipairs)                                      \
     FUNCTION("MsgC", MsgC)                                          \
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", PrintTable)                              \
