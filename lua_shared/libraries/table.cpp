@@ -15,6 +15,21 @@ int CLuaBase::lua$table_Add()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/table.Count
+int CLuaBase::lua$table_Count()
+{
+    double count = 0;
+
+    lua_pushnil(lua_state);
+    while (lua_next(lua_state, 1) != 0) {
+        lua_pop(lua_state, 1);
+        count++;
+    }
+
+    lua_pushnumber(lua_state, count);
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/table.insert
 int CLuaBase::lua$table_insert()
 {

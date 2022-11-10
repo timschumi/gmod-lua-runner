@@ -43,6 +43,7 @@
     MODULE_END()                                                    \
     MODULE_START("table")                                           \
     FUNCTION("Add", table_Add)                                      \
+    FUNCTION("Count", table_Count)                                  \
     FUNCTION("insert", table_insert)                                \
     FUNCTION("remove", table_remove)                                \
     MODULE_END()                                                    \
