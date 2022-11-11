@@ -4,6 +4,11 @@
 #include <fstream>
 #include <lua.hpp>
 
+struct FileHandle {
+    std::string name;
+    std::fstream stream;
+};
+
 // https://wiki.facepunch.com/gmod/File_Search_Paths
 static std::optional<std::list<std::string>> file_search_path_to_list(std::string const& path)
 {
@@ -29,6 +34,14 @@ static std::ios_base::openmode mode_to_ios_flags(std::string const& mode)
         return std::ios_base::out | std::ios_base::app | std::ios_base::binary;
 
     assert(false);
+}
+
+// https://wiki.facepunch.com/gmod/File:Size
+int CLuaBase::lua$meta$File_Size()
+{
+    auto** file = static_cast<FileHandle**>(lua_touserdata(lua_state, 1));
+    lua_pushnumber(lua_state, std::filesystem::file_size((*file)->name));
+    return 1;
 }
 
 // https://wiki.facepunch.com/gmod/file.Find
@@ -94,16 +107,18 @@ int CLuaBase::lua$file_Open()
     for (auto const& directory_path : paths_to_search.value()) {
         std::string full_path = directory_path + "/" + file_name;
 
-        // This is manually allocated because we will be storing it as userdata.
-        auto* file = new std::fstream(full_path.c_str(), mode_to_ios_flags(file_mode));
+        std::fstream file(full_path.c_str(), mode_to_ios_flags(file_mode));
 
-        if (file->fail()) {
-            delete file;
+        if (file.fail())
             continue;
-        }
 
-        auto userdata = static_cast<std::fstream**>(lua_newuserdata(lua_state, sizeof(void*)));
-        *userdata = file;
+        // This is manually allocated because we will be storing it as userdata.
+        auto* handle = new FileHandle;
+        handle->name = std::move(full_path);
+        handle->stream = std::move(file);
+
+        auto userdata = static_cast<FileHandle**>(lua_newuserdata(lua_state, sizeof(void*)));
+        *userdata = handle;
         luaL_setmetatable(lua_state, "File");
 
         return 1;

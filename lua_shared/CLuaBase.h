@@ -81,6 +81,9 @@
     TABLE_END()                                                                                \
     METATABLE_END()                                                                            \
     METATABLE_START("File")                                                                    \
+    TABLE_START("__index")                                                                     \
+    FUNCTION("Size", File_Size)                                                                \
+    TABLE_END()                                                                                \
     METATABLE_END()
 
 // https://wiki.facepunch.com/gmod/Enums/FCVAR
