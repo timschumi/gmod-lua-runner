@@ -44,6 +44,26 @@ int CLuaBase::lua$meta$File_Size()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/File:Read
+int CLuaBase::lua$meta$File_Read()
+{
+    auto** file = static_cast<FileHandle**>(lua_touserdata(lua_state, 1));
+    std::string result;
+
+    if (lua_gettop(lua_state) >= 2) {
+        size_t length = lua_tonumber(lua_state, 2);
+        result.resize(length);
+        (*file)->stream.read(&result[0], length);
+    } else {
+        std::stringstream buffer;
+        buffer << (*file)->stream.rdbuf();
+        result = buffer.str();
+    }
+
+    lua_pushlstring(lua_state, result.c_str(), result.size());
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/file.Find
 int CLuaBase::lua$file_Find()
 {
