@@ -16,8 +16,8 @@ int CLuaBase::lua$string_EndsWith()
 int CLuaBase::lua$string_Explode()
 {
     // FIXME: Support patterns.
-    std::string input = lua_tostring(lua_state, 1);
-    std::string separator = lua_tostring(lua_state, 2);
+    std::string separator = lua_tostring(lua_state, 1);
+    std::string input = lua_tostring(lua_state, 2);
 
     lua_newtable(lua_state);
 
@@ -80,8 +80,8 @@ int CLuaBase::lua$string_match()
 int CLuaBase::lua$string_Split()
 {
     lua_pushcfunction(lua_state, lua$string_Explode$entry);
-    lua_pushvalue(lua_state, 1);
     lua_pushvalue(lua_state, 2);
+    lua_pushvalue(lua_state, 1);
     lua_pushboolean(lua_state, false);
     lua_call(lua_state, 3, 1);
     return 1;
