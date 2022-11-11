@@ -2,6 +2,25 @@
 #include <dlfcn.h>
 #include <lua.hpp>
 
+// https://wiki.facepunch.com/gmod/Global.assert
+int CLuaBase::lua$assert()
+{
+    bool expression = lua_toboolean(lua_state, 1);
+    std::string error_message = lua_gettop(lua_state) >= 2 ? lua_tostring(lua_state, 2) : "assertion failed!";
+    int number_of_varargs = lua_gettop(lua_state) - 2;
+
+    if (!expression) {
+        lua_pushstring(lua_state, error_message.c_str());
+        return lua_error(lua_state);
+    }
+
+    lua_pushvalue(lua_state, 1);
+    lua_pushvalue(lua_state, 2);
+    for (int i = 1; i <= number_of_varargs; i++)
+        lua_pushvalue(lua_state, 2 + i);
+    return 2 + number_of_varargs;
+}
+
 // https://wiki.facepunch.com/gmod/Global.CurTime
 int CLuaBase::lua$CurTime()
 {

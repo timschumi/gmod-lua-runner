@@ -7,6 +7,7 @@
 #include <string>
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
+    FUNCTION("assert", assert)                                      \
     FUNCTION("Color", Color)                                        \
     FUNCTION("CreateConVar", CreateConVar)                          \
     FUNCTION("CurTime", CurTime)                                    \
