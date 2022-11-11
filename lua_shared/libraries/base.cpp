@@ -121,13 +121,23 @@ int CLuaBase::lua$MsgC()
     int number_of_arguments = lua_gettop(lua_state);
 
     for (int i = 1; i <= number_of_arguments; i++) {
-        // FIXME: Support colors.
         if (lua_getmetatable(lua_state, i) != 0) {
             lua_getfield(lua_state, LUA_REGISTRYINDEX, "Color");
             bool is_color = lua_rawequal(lua_state, -1, -2) == 1;
             lua_pop(lua_state, 2);
-            if (is_color)
+
+            if (is_color) {
+                lua_getfield(lua_state, i, "r");
+                int r = lua_tonumber(lua_state, -1);
+                lua_getfield(lua_state, i, "g");
+                int g = lua_tonumber(lua_state, -1);
+                lua_getfield(lua_state, i, "b");
+                int b = lua_tonumber(lua_state, -1);
+                lua_pop(lua_state, 3);
+
+                printf("\x1b[38;2;%d;%d;%dm", r, g, b);
                 continue;
+            }
         }
 
         lua_pushcfunction(lua_state, lua$tostring$entry);
@@ -136,6 +146,7 @@ int CLuaBase::lua$MsgC()
         printf("%s", lua_tostring(lua_state, -1));
         lua_pop(lua_state, 1);
     }
+    printf("\x1b[39m");
     return 0;
 }
 
