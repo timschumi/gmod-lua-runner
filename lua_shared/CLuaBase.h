@@ -82,6 +82,7 @@
     METATABLE_END()                                                                            \
     METATABLE_START("File")                                                                    \
     TABLE_START("__index")                                                                     \
+    FUNCTION("Close", File_Close)                                                              \
     FUNCTION("Read", File_Read)                                                                \
     FUNCTION("Size", File_Size)                                                                \
     TABLE_END()                                                                                \

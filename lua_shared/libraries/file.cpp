@@ -36,6 +36,14 @@ static std::ios_base::openmode mode_to_ios_flags(std::string const& mode)
     assert(false);
 }
 
+// https://wiki.facepunch.com/gmod/File:Close
+int CLuaBase::lua$meta$File_Close()
+{
+    auto** file = static_cast<FileHandle**>(lua_touserdata(lua_state, 1));
+    (*file)->stream.close();
+    return 0;
+}
+
 // https://wiki.facepunch.com/gmod/File:Size
 int CLuaBase::lua$meta$File_Size()
 {
