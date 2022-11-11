@@ -39,6 +39,7 @@
     MODULE_END()                                                    \
     MODULE_START("file")                                            \
     FUNCTION("Find", file_Find)                                     \
+    FUNCTION("Open", file_Open)                                     \
     MODULE_END()                                                    \
     MODULE_START("hook")                                            \
     FUNCTION("Add", hook_Add)                                       \
@@ -78,6 +79,8 @@
     FUNCTION("GetBool", ConVar_GetBool)                                                        \
     FUNCTION("SetBool", ConVar_SetBool)                                                        \
     TABLE_END()                                                                                \
+    METATABLE_END()                                                                            \
+    METATABLE_START("File")                                                                    \
     METATABLE_END()
 
 // https://wiki.facepunch.com/gmod/Enums/FCVAR
