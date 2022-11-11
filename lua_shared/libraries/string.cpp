@@ -2,6 +2,43 @@
 #include <lua.hpp>
 #include <regex>
 
+// https://wiki.facepunch.com/gmod/Patterns
+static std::regex translate_lua_pattern_to_regex(std::string const& pattern)
+{
+    size_t pattern_index = 0;
+    std::string regex;
+
+    bool in_character_class = false;
+    while (pattern_index < pattern.length()) {
+        char next = pattern[pattern_index++];
+
+        if (in_character_class) {
+            switch (next) {
+            case 's': {
+                regex += "\\s";
+                in_character_class = false;
+                break;
+            }
+            default: {
+                printf("Unimplemented character class: %c\n", next);
+                in_character_class = false;
+                break;
+            }
+            }
+            continue;
+        }
+
+        if (next == '%') {
+            in_character_class = true;
+            continue;
+        }
+
+        regex += next;
+    }
+
+    return std::regex(regex);
+}
+
 // https://wiki.facepunch.com/gmod/string.EndsWith
 int CLuaBase::lua$string_EndsWith()
 {
@@ -130,9 +167,8 @@ int CLuaBase::lua$string_format()
 int CLuaBase::lua$string_match()
 {
     std::string string = lua_tostring(lua_state, 1);
-    // FIXME: Implement support for Lua's pattern matching language.
-    // https://wiki.facepunch.com/gmod/Patterns
-    std::regex pattern = std::regex(lua_tostring(lua_state, 2));
+    std::string pattern = lua_tostring(lua_state, 2);
+    std::regex regex = translate_lua_pattern_to_regex(pattern);
     double start_position = lua_gettop(lua_state) >= 3 ? lua_tonumber(lua_state, 3) : 1;
 
     if (start_position > 1) {
@@ -142,7 +178,7 @@ int CLuaBase::lua$string_match()
     }
 
     std::smatch matches;
-    if (!std::regex_search(string, matches, pattern)) {
+    if (!std::regex_search(string, matches, regex)) {
         lua_pushnil(lua_state);
         return 1;
     }
