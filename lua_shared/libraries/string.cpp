@@ -40,6 +40,92 @@ int CLuaBase::lua$string_Explode()
     return 1;
 }
 
+int CLuaBase::lua$string_format()
+{
+    // FIXME: Support options for format specifiers.
+    std::string format = lua_tostring(lua_state, 1);
+    size_t format_index = 0;
+    size_t vararg_index = 2;
+    std::string result;
+
+    bool in_format_specifier = false;
+    while (format_index < format.length()) {
+        char next = format[format_index++];
+
+        if (in_format_specifier) {
+            switch (next) {
+            case 's': {
+                lua_pushcfunction(lua_state, lua$tostring$entry);
+                lua_pushvalue(lua_state, vararg_index++);
+                lua_call(lua_state, 1, 1);
+                std::string string = lua_tostring(lua_state, -1);
+                lua_pop(lua_state, 1);
+                result += string;
+                in_format_specifier = false;
+                break;
+            }
+            case 'c': {
+                char character = static_cast<char>(lua_tonumber(lua_state, vararg_index++));
+                result += character;
+                in_format_specifier = false;
+                break;
+            }
+            case 'e':
+            case 'E':
+            case 'f':
+            case 'G': {
+                char small_format[3];
+                char buffer[32];
+                double number = lua_tonumber(lua_state, vararg_index++);
+                small_format[0] = '%';
+                small_format[1] = next;
+                small_format[2] = 0;
+                size_t length = snprintf(buffer, sizeof(buffer), small_format, number);
+                result += { buffer, length };
+                in_format_specifier = false;
+                break;
+            }
+            case 'd':
+            case 'i':
+            case 'u':
+            case 'o':
+            case 'x':
+            case 'X': {
+                char small_format[3];
+                char buffer[32];
+                long long number = lua_tonumber(lua_state, vararg_index++);
+                small_format[0] = '%';
+                small_format[1] = next;
+                small_format[2] = 0;
+                size_t length = snprintf(buffer, sizeof(buffer), small_format, number);
+                result += { buffer, length };
+                in_format_specifier = false;
+                break;
+            }
+            case '%': {
+                result += '%';
+                in_format_specifier = false;
+                break;
+            }
+            default:
+                printf("Unhandled format specifier: '%c%s'\n", next, format.substr(format_index).c_str());
+                break;
+            }
+            continue;
+        }
+
+        if (next == '%') {
+            in_format_specifier = true;
+            continue;
+        }
+
+        result += next;
+    }
+
+    lua_pushstring(lua_state, result.c_str());
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/string.match
 int CLuaBase::lua$string_match()
 {
