@@ -28,6 +28,15 @@ int CLuaBase::lua$CurTime()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.error(lowercase)
+int CLuaBase::lua$error()
+{
+    // FIXME: No support for errorLevel.
+
+    lua_pushvalue(lua_state, 1);
+    return lua_error(lua_state);
+}
+
 // https://wiki.facepunch.com/gmod/Global.ErrorNoHaltWithStack
 int CLuaBase::lua$ErrorNoHaltWithStack()
 {
