@@ -291,6 +291,25 @@ int CLuaBase::lua$pairs()
     return 3;
 }
 
+// https://wiki.facepunch.com/gmod/Global.pcall
+int CLuaBase::lua$pcall()
+{
+    int top_of_stack = lua_gettop(lua_state);
+    int number_of_varargs = top_of_stack - 1;
+
+    lua_pushvalue(lua_state, 1);
+    for (int i = 1; i <= number_of_varargs; i++) {
+        lua_pushvalue(lua_state, 1 + i);
+    }
+
+    int result = lua_pcall(lua_state, number_of_varargs, LUA_MULTRET, 0);
+
+    int number_of_returned_values = lua_gettop(lua_state) - top_of_stack;
+    lua_pushboolean(lua_state, result == LUA_OK);
+    lua_insert(lua_state, -number_of_returned_values - 1);
+    return number_of_returned_values + 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.print
 int CLuaBase::lua$print()
 {

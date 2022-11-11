@@ -21,6 +21,7 @@
     FUNCTION("MsgC", MsgC)                                          \
     FUNCTION("next", next)                                          \
     FUNCTION("pairs", pairs)                                        \
+    FUNCTION("pcall", pcall)                                        \
     FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", PrintTable)                              \
     FUNCTION("require", require)                                    \
