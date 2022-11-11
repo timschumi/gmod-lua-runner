@@ -1,6 +1,7 @@
 #include "CLuaBase.h"
 #include <cassert>
 #include <chrono>
+#include <cmath>
 #include <cstring>
 #include <limits>
 #include <lua.hpp>
@@ -35,6 +36,9 @@ CLuaBase::CLuaBase()
     lua_gettable(lua_state, -2);
     lua_pushstring(lua_state, "huge");
     lua_pushnumber(lua_state, std::numeric_limits<double>::max());
+    lua_settable(lua_state, -3);
+    lua_pushstring(lua_state, "pi");
+    lua_pushnumber(lua_state, M_PI);
     lua_settable(lua_state, -3);
     lua_pop(lua_state, 1);
 
