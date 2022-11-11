@@ -2,6 +2,7 @@
 #include <cassert>
 #include <chrono>
 #include <cstring>
+#include <limits>
 #include <lua.hpp>
 #include <thread>
 
@@ -29,6 +30,13 @@ CLuaBase::CLuaBase()
     lua_pushstring(lua_state, "_G");
     lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
     lua_settable(lua_state, -3);
+
+    lua_pushstring(lua_state, "math");
+    lua_gettable(lua_state, -2);
+    lua_pushstring(lua_state, "huge");
+    lua_pushnumber(lua_state, std::numeric_limits<double>::max());
+    lua_settable(lua_state, -3);
+    lua_pop(lua_state, 1);
 
 #define REGISTER_CONVAR_FLAG(name, value) \
     lua_pushstring(lua_state, #name);     \
