@@ -27,6 +27,7 @@
     FUNCTION("setfenv", setfenv)                                    \
     FUNCTION("setmetatable", setmetatable)                          \
     FUNCTION("tostring", tostring)                                  \
+    FUNCTION("unpack", unpack)                                      \
     FUNCTION("xpcall", xpcall)                                      \
     MODULE_START("coroutine")                                       \
     FUNCTION("create", coroutine_create)                            \

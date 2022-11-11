@@ -318,6 +318,20 @@ int CLuaBase::lua$tostring()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.unpack
+int CLuaBase::lua$unpack()
+{
+    size_t start_index = lua_gettop(lua_state) >= 2 ? lua_tonumber(lua_state, 2) : 1;
+    size_t end_index = lua_gettop(lua_state) >= 3 ? lua_tonumber(lua_state, 3) : lua_objlen(lua_state, 1);
+
+    for (size_t i = start_index; i <= end_index; i++) {
+        lua_pushnumber(lua_state, i);
+        lua_gettable(lua_state, 1);
+    }
+
+    return end_index - start_index + 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.xpcall
 int CLuaBase::lua$xpcall()
 {
