@@ -219,6 +219,16 @@ int CLuaBase::lua$string_rep()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/string.Right
+int CLuaBase::lua$string_Right()
+{
+    std::string str = lua_tostring(lua_state, 1);
+    size_t num = lua_tonumber(lua_state, 2);
+
+    lua_pushstring(lua_state, str.substr(str.length() - num).c_str());
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/string.Split
 int CLuaBase::lua$string_Split()
 {

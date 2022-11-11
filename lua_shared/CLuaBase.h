@@ -59,6 +59,7 @@
     FUNCTION("format", string_format)                               \
     FUNCTION("match", string_match)                                 \
     FUNCTION("rep", string_rep)                                     \
+    FUNCTION("Right", string_Right)                                 \
     FUNCTION("Split", string_Split)                                 \
     FUNCTION("StartWith", string_StartWith)                         \
     MODULE_END()                                                    \
