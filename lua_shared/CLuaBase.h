@@ -29,6 +29,9 @@
     FUNCTION("tostring", tostring)                                  \
     FUNCTION("unpack", unpack)                                      \
     FUNCTION("xpcall", xpcall)                                      \
+    MODULE_START("concommand")                                      \
+    FUNCTION("Add", concommand_Add)                                 \
+    MODULE_END()                                                    \
     MODULE_START("coroutine")                                       \
     FUNCTION("create", coroutine_create)                            \
     FUNCTION("resume", coroutine_resume)                            \
@@ -172,6 +175,13 @@ private:
         std::optional<double> max;
     };
     std::map<std::string, ConVar> convars;
+
+    struct ConCommand {
+        int callback;
+        std::string help_text;
+        int flags;
+    };
+    std::map<std::string, ConCommand> concommands;
 
     // Standard library implementation.
 #define DECLARE_LUA_FUNCTION(name, impl)                     \

@@ -3,6 +3,7 @@ set(SOURCES
     libraries/base.cpp
     libraries/base_color.cpp
     libraries/base_convars.cpp
+    libraries/concommand.cpp
     libraries/coroutine.cpp
     libraries/debug.cpp
     libraries/file.cpp
