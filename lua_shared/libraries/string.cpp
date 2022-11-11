@@ -76,6 +76,27 @@ int CLuaBase::lua$string_match()
     return matches.size() - 1;
 }
 
+// https://wiki.facepunch.com/gmod/string.rep
+int CLuaBase::lua$string_rep()
+{
+    std::string str = lua_tostring(lua_state, 1);
+    size_t repetitions = lua_tonumber(lua_state, 2);
+    std::string separator = lua_gettop(lua_state) >= 3 ? lua_tostring(lua_state, 3) : "";
+
+    std::string result;
+
+    while (repetitions > 0) {
+        result += str;
+        repetitions--;
+
+        if (repetitions > 0)
+            result += separator;
+    }
+
+    lua_pushstring(lua_state, result.c_str());
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/string.Split
 int CLuaBase::lua$string_Split()
 {
