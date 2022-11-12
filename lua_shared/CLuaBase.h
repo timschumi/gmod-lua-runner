@@ -149,7 +149,7 @@ private:
 
     double uptime { 0 };
 
-    std::list<void*> loaded_module_handles;
+    std::map<std::string, void*> loaded_module_handles;
     void unload_modules();
 
     std::map<std::string, std::map<std::string, int>> registered_hooks;

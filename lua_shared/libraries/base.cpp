@@ -371,11 +371,14 @@ int CLuaBase::lua$PrintTable()
 int CLuaBase::lua$require()
 {
     char const* format = "garrysmod/lua/bin/gmsv_%s_" GMOD_MODULE_ARCH ".dll";
-    char const* module_name = lua_tostring(lua_state, -1);
+    std::string module_name = lua_tostring(lua_state, -1);
 
-    size_t formatted_name_length = snprintf(nullptr, 0, format, module_name);
+    if (loaded_module_handles.contains(module_name))
+        return 0;
+
+    size_t formatted_name_length = snprintf(nullptr, 0, format, module_name.c_str());
     char full_name[formatted_name_length + 1];
-    snprintf(full_name, sizeof(full_name), format, module_name);
+    snprintf(full_name, sizeof(full_name), format, module_name.c_str());
 
     void* library_handle = dlopen(full_name, RTLD_LAZY);
     if (!library_handle) {
@@ -390,7 +393,7 @@ int CLuaBase::lua$require()
     lua_pushcfunction(lua_state, library_init_function);
     lua_call(lua_state, 0, 0);
 
-    loaded_module_handles.push_back(library_handle);
+    loaded_module_handles[module_name] = library_handle;
 
     return 0;
 }
@@ -517,8 +520,8 @@ int CLuaBase::lua$xpcall()
 
 void CLuaBase::unload_modules()
 {
-    for (auto handle : loaded_module_handles) {
-        auto library_fini_function = reinterpret_cast<lua_CFunction>(dlsym(handle, "gmod13_close"));
+    for (auto const& handle : loaded_module_handles) {
+        auto library_fini_function = reinterpret_cast<lua_CFunction>(dlsym(handle.second, "gmod13_close"));
         if (!library_fini_function) {
             fprintf(stderr, "dlsym failed: %s\n", dlerror());
             continue;
@@ -527,7 +530,7 @@ void CLuaBase::unload_modules()
         lua_pushcfunction(lua_state, library_fini_function);
         lua_call(lua_state, 0, 0);
 
-        dlclose(handle);
+        dlclose(handle.second);
     }
 
     loaded_module_handles.clear();
