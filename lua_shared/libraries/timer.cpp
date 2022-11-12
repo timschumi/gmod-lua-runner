@@ -17,3 +17,16 @@ int CLuaBase::lua$timer_Create()
 
     return 0;
 }
+
+// https://wiki.facepunch.com/gmod/timer.Remove
+int CLuaBase::lua$timer_Remove()
+{
+    std::string identifier = lua_tostring(lua_state, 1);
+
+    if (!timers.contains(identifier))
+        return 0;
+
+    luaL_unref(lua_state, LUA_REGISTRYINDEX, timers[identifier].function);
+    timers.erase(identifier);
+    return 0;
+}

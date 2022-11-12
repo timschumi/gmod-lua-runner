@@ -78,6 +78,7 @@
     MODULE_END()                                                    \
     MODULE_START("timer")                                           \
     FUNCTION("Create", timer_Create)                                \
+    FUNCTION("Remove", timer_Remove)                                \
     MODULE_END()
 
 #define ENUMERATE_METATABLES(METATABLE_START, METATABLE_END, TABLE_START, TABLE_END, FUNCTION) \
