@@ -158,7 +158,7 @@ private:
 
     struct Timer {
         double delay;
-        double repetitions;
+        std::optional<double> repetitions;
         int function;
         double cooldown;
     };

@@ -149,6 +149,14 @@ bool CLuaBase::is_active()
             return true;
     }
 
+    for (auto const& timer : timers) {
+        if (!timer.second.repetitions.has_value())
+            continue;
+
+        if (timer.second.repetitions > 0)
+            return true;
+    }
+
     return false;
 }
 
@@ -169,6 +177,14 @@ void CLuaBase::run_event_loop()
         for (auto& timer : timers) {
             if (timer.second.cooldown > 0)
                 continue;
+
+            if (timer.second.repetitions.has_value()) {
+                auto& repetitions = timer.second.repetitions.value();
+                if (repetitions <= 0)
+                    continue;
+
+                repetitions -= 1;
+            }
 
             timer.second.cooldown = timer.second.delay;
             lua_rawgeti(lua_state, LUA_REGISTRYINDEX, timer.second.function);
