@@ -21,6 +21,24 @@ jobs:
       run: |
         cmake --build build
 
+    - name: Check out GLuaTest
+      uses: actions/checkout@v3
+      with:
+        repository: 'CFC-Servers/GLuaTest'
+        path: 'GLuaTest'
+
+    - name: Create the required directory structure
+      run: |
+        mkdir -p "root/garrysmod/lua/autorun"
+        mkdir -p "root/garrysmod/lua/tests"
+        ln -Tsv "$(pwd)/GLuaTest/lua/autorun/gluatest.lua" "root/garrysmod/lua/autorun/gluatest.lua"
+        ln -Tsv "$(pwd)/GLuaTest/lua/gluatest" "root/garrysmod/lua/gluatest"
+        ln -Tsv "$(pwd)/tests" "root/garrysmod/lua/tests/gmod-lua-runner"
+
+    - name: Run tests
+      run: |
+        GMOD_DIR=root ./build/runner/runner test.lua
+
     - name: Package binaries
       run: |
         cmake --build build --target package
