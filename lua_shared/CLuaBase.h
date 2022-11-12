@@ -28,6 +28,7 @@
     FUNCTION("setfenv", setfenv)                                    \
     FUNCTION("setmetatable", setmetatable)                          \
     FUNCTION("tostring", tostring)                                  \
+    FUNCTION("type", type)                                          \
     FUNCTION("unpack", unpack)                                      \
     FUNCTION("xpcall", xpcall)                                      \
     MODULE_START("concommand")                                      \

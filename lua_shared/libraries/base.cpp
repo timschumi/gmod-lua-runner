@@ -466,6 +466,18 @@ int CLuaBase::lua$tostring()
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.type
+int CLuaBase::lua$type()
+{
+    if (lua_gettop(lua_state) < 1) {
+        lua_pushstring(lua_state, "no value");
+        return 1;
+    }
+
+    lua_pushstring(lua_state, luaL_typename(lua_state, 1));
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.unpack
 int CLuaBase::lua$unpack()
 {
