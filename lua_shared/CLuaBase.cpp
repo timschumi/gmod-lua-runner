@@ -82,62 +82,34 @@ CLuaBase::~CLuaBase()
     lua_close(lua_state);
 }
 
-CLuaBase::RunFileResult CLuaBase::load_and_run_file(char const* path)
+int CLuaBase::load_file(char const* path)
 {
-    int ret = luaL_loadfile(lua_state, path);
-
-    switch (ret) {
-    case LUA_ERRSYNTAX:
-        return RunFileResult::SyntaxError;
-    case LUA_ERRMEM:
-        return RunFileResult::MemoryAllocationError;
-    case LUA_ERRFILE:
-        return RunFileResult::FileError;
-    default:
-        break;
-    }
-
-    ret = lua_pcall(lua_state, 0, LUA_MULTRET, 0);
-
-    switch (ret) {
-    case LUA_ERRRUN:
-        return RunFileResult::RuntimeError;
-    case LUA_ERRMEM:
-        return RunFileResult::MemoryAllocationError;
-    case LUA_ERRERR:
-        return RunFileResult::ErrorError;
-    default:
-        break;
-    }
-
-    return RunFileResult::Success;
+    return luaL_loadfile(lua_state, path);
 }
 
-CLuaBase::RunFileResult CLuaBase::load_and_run_file_or_show_error(char const* path)
+int CLuaBase::print_error_with_stack_trace(lua_State* lua_state)
 {
-    auto result = load_and_run_file(path);
+    char const* message = luaL_checkstring(lua_state, 1);
 
-    switch (result) {
-    case CLuaBase::SyntaxError:
-        fprintf(stderr, "Syntax Error: %s\n", CheckString(-1));
-        break;
-    case CLuaBase::MemoryAllocationError:
-        fprintf(stderr, "Memory Allocation Error: %s\n", CheckString(-1));
-        break;
-    case CLuaBase::FileError:
-        fprintf(stderr, "File Error: %s\n", CheckString(-1));
-        break;
-    case CLuaBase::RuntimeError:
-        fprintf(stderr, "Runtime Error: %s\n", CheckString(-1));
-        break;
-    case CLuaBase::ErrorError:
-        fprintf(stderr, "Error while handling Errors: %s\n", CheckString(-1));
-        break;
-    default:
-        break;
+    fprintf(stderr, "%s\n", message);
+
+    int level = 1;
+    while (true) {
+        lua_Debug ar {};
+
+        if (lua_getstack(lua_state, level, &ar) == 0)
+            break;
+
+        if (lua_getinfo(lua_state, "nSl", &ar) == 0)
+            continue;
+
+        fprintf(stderr, "%d. %s - %s:%d\n", level, ar.name ?: "unknown", ar.short_src, ar.currentline);
+
+        level++;
     }
 
-    return result;
+    lua_pushstring(lua_state, message);
+    return 1;
 }
 
 bool CLuaBase::is_active()

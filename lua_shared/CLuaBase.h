@@ -130,17 +130,9 @@ public:
     CLuaBase();
     ~CLuaBase();
 
-    enum RunFileResult {
-        Success,
-        SyntaxError,
-        MemoryAllocationError,
-        FileError,
-        RuntimeError,
-        ErrorError,
-    };
+    int load_file(char const* path);
+    static int print_error_with_stack_trace(lua_State* state);
 
-    RunFileResult load_and_run_file(char const* path);
-    RunFileResult load_and_run_file_or_show_error(char const* path);
     bool is_active();
     void run_event_loop();
 

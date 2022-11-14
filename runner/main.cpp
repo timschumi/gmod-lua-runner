@@ -41,16 +41,25 @@ int main(int argc, char const** argv)
     lua_base.Pop(1);
 
     if (std::filesystem::exists("garrysmod/lua/autorun")) {
+        lua_base.PushCFunction(CLuaBase::print_error_with_stack_trace);
         for (auto const& entry : std::filesystem::directory_iterator("garrysmod/lua/autorun")) {
-            if (lua_base.load_and_run_file_or_show_error(entry.path().c_str()) != CLuaBase::Success)
+            if (lua_base.load_file(entry.path().c_str()) != 0) {
+                fprintf(stderr, "%s\n", lua_base.CheckString(-1));
+                return 1;
+            }
+            if (lua_base.PCall(0, 0, -2) != 0)
                 return 1;
         }
+        lua_base.Pop(1);
     }
 
+    lua_base.PushCFunction(CLuaBase::print_error_with_stack_trace);
     auto top_before_script = lua_base.Top();
-    auto result = lua_base.load_and_run_file_or_show_error(script_path.c_str());
-
-    if (result != CLuaBase::Success)
+    if (lua_base.load_file(script_path.c_str()) != 0) {
+        fprintf(stderr, "%s\n", lua_base.CheckString(-1));
+        return 1;
+    }
+    if (lua_base.PCall(0, 0, -2) != 0)
         return 1;
 
     bool has_return_values = lua_base.Top() > top_before_script;
