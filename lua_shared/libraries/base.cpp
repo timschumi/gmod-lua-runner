@@ -338,7 +338,7 @@ int CLuaBase::lua$PrintTable()
 {
     // Note: `done` is ignored.
     luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
-    int indent = luaL_checknumber(lua_state, 2);
+    int indent = lua_gettop(lua_state) >= 2 ? luaL_checknumber(lua_state, 2) : 0;
 
     lua_pushnil(lua_state);
     while (lua_next(lua_state, 1) != 0) {
