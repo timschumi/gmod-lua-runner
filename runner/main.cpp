@@ -28,9 +28,11 @@ int main(int argc, char const** argv)
 
     CLuaBase lua_base;
 
-    for (auto const& entry : std::filesystem::directory_iterator("garrysmod/lua/autorun")) {
-        if (lua_base.load_and_run_file_or_show_error(entry.path().c_str()) != CLuaBase::Success)
-            return 1;
+    if (std::filesystem::exists("garrysmod/lua/autorun")) {
+        for (auto const& entry : std::filesystem::directory_iterator("garrysmod/lua/autorun")) {
+            if (lua_base.load_and_run_file_or_show_error(entry.path().c_str()) != CLuaBase::Success)
+                return 1;
+        }
     }
 
     auto top_before_script = lua_base.Top();
