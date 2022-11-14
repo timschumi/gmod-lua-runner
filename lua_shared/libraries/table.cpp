@@ -4,6 +4,9 @@
 // https://wiki.facepunch.com/gmod/table.Add
 int CLuaBase::lua$table_Add()
 {
+    luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
+    luaL_argcheck(lua_state, lua_istable(lua_state, 2), 2, "Expected table");
+
     lua_pushnil(lua_state);
     while (lua_next(lua_state, 2) != 0) {
         // Duplicate the key, since we will still need it for the next iteration.
@@ -18,9 +21,10 @@ int CLuaBase::lua$table_Add()
 // https://wiki.facepunch.com/gmod/table.concat
 int CLuaBase::lua$table_concat()
 {
-    std::string concatenator = lua_gettop(lua_state) >= 2 ? lua_tostring(lua_state, 2) : "";
-    double start_position = lua_gettop(lua_state) >= 3 ? lua_tonumber(lua_state, 3) : 1;
-    double end_position = lua_gettop(lua_state) >= 4 ? lua_tonumber(lua_state, 4) : lua_objlen(lua_state, 1);
+    luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
+    std::string concatenator = lua_gettop(lua_state) >= 2 ? luaL_checkstring(lua_state, 2) : "";
+    double start_position = lua_gettop(lua_state) >= 3 ? luaL_checknumber(lua_state, 3) : 1;
+    double end_position = lua_gettop(lua_state) >= 4 ? luaL_checknumber(lua_state, 4) : lua_objlen(lua_state, 1);
     std::string result;
 
     while (start_position <= end_position) {
@@ -48,6 +52,8 @@ int CLuaBase::lua$table_concat()
 // https://wiki.facepunch.com/gmod/table.Count
 int CLuaBase::lua$table_Count()
 {
+    luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
+
     double count = 0;
 
     lua_pushnil(lua_state);
@@ -63,6 +69,9 @@ int CLuaBase::lua$table_Count()
 // https://wiki.facepunch.com/gmod/table.Inherit
 int CLuaBase::lua$table_Inherit()
 {
+    luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
+    luaL_argcheck(lua_state, lua_istable(lua_state, 2), 2, "Expected table");
+
     lua_pushnil(lua_state);
     while (lua_next(lua_state, 2) != 0) {
         lua_pushvalue(lua_state, -2);
@@ -91,9 +100,11 @@ int CLuaBase::lua$table_Inherit()
 // https://wiki.facepunch.com/gmod/table.insert
 int CLuaBase::lua$table_insert()
 {
+    luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
+
     bool has_custom_target_index = lua_gettop(lua_state) >= 3;
     size_t table_size = lua_objlen(lua_state, 1);
-    size_t target_index = has_custom_target_index ? lua_tonumber(lua_state, 2) : table_size + 1;
+    size_t target_index = has_custom_target_index ? luaL_checknumber(lua_state, 2) : table_size + 1;
 
     for (size_t i = table_size; i >= target_index; i--) {
         lua_pushnumber(lua_state, i + 1);
@@ -112,8 +123,10 @@ int CLuaBase::lua$table_insert()
 // https://wiki.facepunch.com/gmod/table.remove
 int CLuaBase::lua$table_remove()
 {
+    luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
+
     size_t table_length = lua_objlen(lua_state, 1);
-    double index = lua_gettop(lua_state) >= 2 ? lua_tonumber(lua_state, 2) : table_length;
+    double index = lua_gettop(lua_state) >= 2 ? luaL_checknumber(lua_state, 2) : table_length;
 
     if (index < 1 || index > table_length)
         return 0;

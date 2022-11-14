@@ -6,7 +6,7 @@
 int CLuaBase::lua$assert()
 {
     bool expression = lua_toboolean(lua_state, 1);
-    std::string error_message = lua_gettop(lua_state) >= 2 ? lua_tostring(lua_state, 2) : "assertion failed!";
+    std::string error_message = lua_gettop(lua_state) >= 2 ? luaL_checkstring(lua_state, 2) : "assertion failed!";
     int number_of_varargs = lua_gettop(lua_state) - 2;
 
     if (!expression) {
@@ -77,7 +77,7 @@ int CLuaBase::lua$Color()
 // https://wiki.facepunch.com/gmod/ConVar:GetBool
 int CLuaBase::lua$meta$ConVar_GetBool()
 {
-    auto convar = static_cast<ConVar**>(lua_touserdata(lua_state, 1));
+    auto convar = static_cast<ConVar**>(luaL_checkudata(lua_state, 1, "ConVar"));
 
     // If the value is numeric and not 0, the result will be true. Otherwise, the result will be false.
     lua_pushboolean(lua_state, strtod((*convar)->value.c_str(), nullptr) != 0);
@@ -88,7 +88,7 @@ int CLuaBase::lua$meta$ConVar_GetBool()
 // https://wiki.facepunch.com/gmod/ConVar:SetBool
 int CLuaBase::lua$meta$ConVar_SetBool()
 {
-    auto convar = static_cast<ConVar**>(lua_touserdata(lua_state, 1));
+    auto convar = static_cast<ConVar**>(luaL_checkudata(lua_state, 1, "ConVar"));
     auto value = lua_toboolean(lua_state, 2);
 
     (*convar)->value = value ? "1" : "0";
@@ -100,12 +100,12 @@ int CLuaBase::lua$meta$ConVar_SetBool()
 int CLuaBase::lua$CreateConVar()
 {
     int number_of_arguments = lua_gettop(lua_state);
-    std::string name = lua_tostring(lua_state, 1);
-    std::string value = lua_tostring(lua_state, 2);
-    long flags = (number_of_arguments >= 3) ? static_cast<long>(lua_tonumber(lua_state, 3)) : FCVAR_NONE;
-    auto helptext = (number_of_arguments >= 4) ? std::optional<std::string> { lua_tostring(lua_state, 4) } : std::nullopt;
-    auto min = (number_of_arguments >= 5) ? std::optional<double> { lua_tonumber(lua_state, 5) } : std::nullopt;
-    auto max = (number_of_arguments >= 6) ? std::optional<double> { lua_tonumber(lua_state, 6) } : std::nullopt;
+    std::string name = luaL_checkstring(lua_state, 1);
+    std::string value = luaL_checkstring(lua_state, 2);
+    long flags = (number_of_arguments >= 3) ? static_cast<long>(luaL_checknumber(lua_state, 3)) : FCVAR_NONE;
+    auto helptext = (number_of_arguments >= 4) ? std::optional<std::string> { luaL_checkstring(lua_state, 4) } : std::nullopt;
+    auto min = (number_of_arguments >= 5) ? std::optional<double> { luaL_checknumber(lua_state, 5) } : std::nullopt;
+    auto max = (number_of_arguments >= 6) ? std::optional<double> { luaL_checknumber(lua_state, 6) } : std::nullopt;
 
     if (!convars.contains(name)) {
         convars[name] = { value, flags, helptext, min, max };
@@ -158,7 +158,7 @@ int CLuaBase::lua$ErrorNoHaltWithStack()
 // https://wiki.facepunch.com/gmod/Global.GetConVar
 int CLuaBase::lua$GetConVar()
 {
-    std::string name = lua_tostring(lua_state, 1);
+    std::string name = luaL_checkstring(lua_state, 1);
 
     if (!convars.contains(name)) {
         lua_pushnil(lua_state);
@@ -191,7 +191,7 @@ int CLuaBase::lua$getfenv()
 // https://wiki.facepunch.com/gmod/Global.include
 int CLuaBase::lua$include()
 {
-    std::string path = (std::string) "garrysmod/lua/" + lua_tostring(lua_state, 1);
+    std::string path = (std::string) "garrysmod/lua/" + luaL_checkstring(lua_state, 1);
     int initial_top = lua_gettop(lua_state);
 
     if (luaL_loadfile(lua_state, path.c_str()) != LUA_OK)
@@ -204,10 +204,10 @@ int CLuaBase::lua$include()
 
 static int ipairs_iterator(lua_State* lua_state)
 {
-    lua_pushnumber(lua_state, lua_tonumber(lua_state, 2) + 1);
+    lua_pushnumber(lua_state, luaL_checknumber(lua_state, 2) + 1);
     lua_replace(lua_state, 2);
 
-    if (lua_tonumber(lua_state, 2) > lua_objlen(lua_state, 1))
+    if (luaL_checknumber(lua_state, 2) > lua_objlen(lua_state, 1))
         return 0;
 
     lua_pushvalue(lua_state, 2);
@@ -271,6 +271,8 @@ int CLuaBase::lua$MsgC()
 // https://wiki.facepunch.com/gmod/Global.next
 int CLuaBase::lua$next()
 {
+    luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
+
     if (lua_gettop(lua_state) >= 2)
         lua_pushvalue(lua_state, 2);
     else
@@ -297,6 +299,7 @@ int CLuaBase::lua$pcall()
     int top_of_stack = lua_gettop(lua_state);
     int number_of_varargs = top_of_stack - 1;
 
+    luaL_argcheck(lua_state, lua_isfunction(lua_state, 1), 1, "Expected function");
     lua_pushvalue(lua_state, 1);
     for (int i = 1; i <= number_of_varargs; i++) {
         lua_pushvalue(lua_state, 1 + i);
@@ -334,7 +337,8 @@ int CLuaBase::lua$print()
 int CLuaBase::lua$PrintTable()
 {
     // Note: `done` is ignored.
-    int indent = lua_tonumber(lua_state, 2);
+    luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
+    int indent = luaL_checknumber(lua_state, 2);
 
     lua_pushnil(lua_state);
     while (lua_next(lua_state, 1) != 0) {
@@ -371,7 +375,7 @@ int CLuaBase::lua$PrintTable()
 int CLuaBase::lua$require()
 {
     char const* format = "garrysmod/lua/bin/gmsv_%s_" GMOD_MODULE_ARCH ".dll";
-    std::string module_name = lua_tostring(lua_state, -1);
+    std::string module_name = luaL_checkstring(lua_state, 1);
 
     if (loaded_module_handles.contains(module_name))
         return 0;
@@ -409,6 +413,9 @@ int CLuaBase::lua$setfenv()
         lua_getinfo(lua_state, "f", &ar);
         lua_replace(lua_state, 1);
     }
+
+    luaL_argcheck(lua_state, lua_isfunction(lua_state, 1), 1, "Expected function");
+    luaL_argcheck(lua_state, lua_istable(lua_state, 2), 2, "Expected table");
 
     lua_pushvalue(lua_state, 2);
     lua_setfenv(lua_state, 1);

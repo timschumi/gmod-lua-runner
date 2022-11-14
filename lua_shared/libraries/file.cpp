@@ -39,7 +39,7 @@ static std::ios_base::openmode mode_to_ios_flags(std::string const& mode)
 // https://wiki.facepunch.com/gmod/File:Close
 int CLuaBase::lua$meta$File_Close()
 {
-    auto** file = static_cast<FileHandle**>(lua_touserdata(lua_state, 1));
+    auto** file = static_cast<FileHandle**>(luaL_checkudata(lua_state, 1, "File"));
     (*file)->stream.close();
     return 0;
 }
@@ -47,7 +47,7 @@ int CLuaBase::lua$meta$File_Close()
 // https://wiki.facepunch.com/gmod/File:Size
 int CLuaBase::lua$meta$File_Size()
 {
-    auto** file = static_cast<FileHandle**>(lua_touserdata(lua_state, 1));
+    auto** file = static_cast<FileHandle**>(luaL_checkudata(lua_state, 1, "File"));
     lua_pushnumber(lua_state, std::filesystem::file_size((*file)->name));
     return 1;
 }
@@ -55,11 +55,11 @@ int CLuaBase::lua$meta$File_Size()
 // https://wiki.facepunch.com/gmod/File:Read
 int CLuaBase::lua$meta$File_Read()
 {
-    auto** file = static_cast<FileHandle**>(lua_touserdata(lua_state, 1));
+    auto** file = static_cast<FileHandle**>(luaL_checkudata(lua_state, 1, "File"));
     std::string result;
 
     if (lua_gettop(lua_state) >= 2) {
-        size_t length = lua_tonumber(lua_state, 2);
+        size_t length = luaL_checknumber(lua_state, 2);
         result.resize(length);
         (*file)->stream.read(&result[0], length);
     } else {
@@ -75,10 +75,10 @@ int CLuaBase::lua$meta$File_Read()
 // https://wiki.facepunch.com/gmod/file.Find
 int CLuaBase::lua$file_Find()
 {
-    std::string name = lua_tostring(lua_state, 1);
-    std::string path = lua_tostring(lua_state, 2);
+    std::string name = luaL_checkstring(lua_state, 1);
+    std::string path = luaL_checkstring(lua_state, 2);
     // FIXME: Sorting is currently ignored.
-    std::string sorting = lua_gettop(lua_state) >= 3 ? lua_tostring(lua_state, 3) : "nameasc";
+    std::string sorting = lua_gettop(lua_state) >= 3 ? luaL_checkstring(lua_state, 3) : "nameasc";
 
     auto paths_to_search = file_search_path_to_list(path);
 
@@ -123,9 +123,9 @@ int CLuaBase::lua$file_Find()
 int CLuaBase::lua$file_Open()
 {
     // FIXME: Sanitize path against directory traversal.
-    std::string file_name = lua_tostring(lua_state, 1);
-    std::string file_mode = lua_tostring(lua_state, 2);
-    std::string game_path = lua_tostring(lua_state, 3);
+    std::string file_name = luaL_checkstring(lua_state, 1);
+    std::string file_mode = luaL_checkstring(lua_state, 2);
+    std::string game_path = luaL_checkstring(lua_state, 3);
 
     auto paths_to_search = file_search_path_to_list(game_path);
 

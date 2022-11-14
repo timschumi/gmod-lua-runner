@@ -42,8 +42,8 @@ static std::regex translate_lua_pattern_to_regex(std::string const& pattern)
 // https://wiki.facepunch.com/gmod/string.EndsWith
 int CLuaBase::lua$string_EndsWith()
 {
-    std::string str = lua_tostring(lua_state, 1);
-    std::string end = lua_tostring(lua_state, 2);
+    std::string str = luaL_checkstring(lua_state, 1);
+    std::string end = luaL_checkstring(lua_state, 2);
 
     lua_pushboolean(lua_state, str.ends_with(end));
     return 1;
@@ -53,8 +53,8 @@ int CLuaBase::lua$string_EndsWith()
 int CLuaBase::lua$string_Explode()
 {
     // FIXME: Support patterns.
-    std::string separator = lua_tostring(lua_state, 1);
-    std::string input = lua_tostring(lua_state, 2);
+    std::string separator = luaL_checkstring(lua_state, 1);
+    std::string input = luaL_checkstring(lua_state, 2);
 
     lua_newtable(lua_state);
 
@@ -80,7 +80,7 @@ int CLuaBase::lua$string_Explode()
 int CLuaBase::lua$string_format()
 {
     // FIXME: Support options for format specifiers.
-    std::string format = lua_tostring(lua_state, 1);
+    std::string format = luaL_checkstring(lua_state, 1);
     size_t format_index = 0;
     size_t vararg_index = 2;
     std::string result;
@@ -166,10 +166,10 @@ int CLuaBase::lua$string_format()
 // https://wiki.facepunch.com/gmod/string.match
 int CLuaBase::lua$string_match()
 {
-    std::string string = lua_tostring(lua_state, 1);
-    std::string pattern = lua_tostring(lua_state, 2);
+    std::string string = luaL_checkstring(lua_state, 1);
+    std::string pattern = luaL_checkstring(lua_state, 2);
     std::regex regex = translate_lua_pattern_to_regex(pattern);
-    double start_position = lua_gettop(lua_state) >= 3 ? lua_tonumber(lua_state, 3) : 1;
+    double start_position = lua_gettop(lua_state) >= 3 ? luaL_checknumber(lua_state, 3) : 1;
 
     if (start_position > 1) {
         string = string.substr(start_position - 1);
@@ -201,9 +201,9 @@ int CLuaBase::lua$string_match()
 // https://wiki.facepunch.com/gmod/string.rep
 int CLuaBase::lua$string_rep()
 {
-    std::string str = lua_tostring(lua_state, 1);
-    size_t repetitions = lua_tonumber(lua_state, 2);
-    std::string separator = lua_gettop(lua_state) >= 3 ? lua_tostring(lua_state, 3) : "";
+    std::string str = luaL_checkstring(lua_state, 1);
+    size_t repetitions = luaL_checknumber(lua_state, 2);
+    std::string separator = lua_gettop(lua_state) >= 3 ? luaL_checkstring(lua_state, 3) : "";
 
     std::string result;
 
@@ -222,8 +222,8 @@ int CLuaBase::lua$string_rep()
 // https://wiki.facepunch.com/gmod/string.Right
 int CLuaBase::lua$string_Right()
 {
-    std::string str = lua_tostring(lua_state, 1);
-    size_t num = lua_tonumber(lua_state, 2);
+    std::string str = luaL_checkstring(lua_state, 1);
+    size_t num = luaL_checknumber(lua_state, 2);
 
     lua_pushstring(lua_state, str.substr(str.length() - num).c_str());
     return 1;
@@ -243,8 +243,8 @@ int CLuaBase::lua$string_Split()
 // https://wiki.facepunch.com/gmod/string.StartWith
 int CLuaBase::lua$string_StartWith()
 {
-    std::string str = lua_tostring(lua_state, 1);
-    std::string start = lua_tostring(lua_state, 2);
+    std::string str = luaL_checkstring(lua_state, 1);
+    std::string start = luaL_checkstring(lua_state, 2);
 
     lua_pushboolean(lua_state, str.starts_with(start));
     return 1;

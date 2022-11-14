@@ -4,6 +4,8 @@
 // https://wiki.facepunch.com/gmod/coroutine.create
 int CLuaBase::lua$coroutine_create()
 {
+    luaL_argcheck(lua_state, lua_isfunction(lua_state, 1), 1, "Expected function");
+
     auto coroutine = lua_newthread(lua_state);
     coroutine->luabase = this;
     coroutines.push_back(coroutine);
@@ -15,6 +17,8 @@ int CLuaBase::lua$coroutine_create()
 // https://wiki.facepunch.com/gmod/coroutine.resume
 int CLuaBase::lua$coroutine_resume()
 {
+    luaL_argcheck(lua_state, lua_isthread(lua_state, 1), 1, "Expected thread");
+
     int number_of_arguments = lua_gettop(lua_state) - 1;
     auto coroutine = lua_tothread(lua_state, 1);
     lua_xmove(lua_state, coroutine, number_of_arguments);

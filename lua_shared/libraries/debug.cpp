@@ -4,12 +4,13 @@
 // https://wiki.facepunch.com/gmod/debug.getinfo
 int CLuaBase::lua$debug_getinfo()
 {
-    std::string fields = lua_gettop(lua_state) >= 2 ? lua_tostring(lua_state, 2) : "flnSu";
+    std::string fields = lua_gettop(lua_state) >= 2 ? luaL_checkstring(lua_state, 2) : "flnSu";
     lua_Debug ar {};
     if (lua_type(lua_state, 1) == LUA_TNUMBER) {
         lua_getstack(lua_state, lua_tonumber(lua_state, 1), &ar);
     } else {
         fields = ">" + fields;
+        luaL_argcheck(lua_state, lua_isfunction(lua_state, 1), 1, "Expected function");
         lua_pushvalue(lua_state, 1);
     }
 
@@ -88,9 +89,11 @@ int CLuaBase::lua$debug_getlocal()
 {
     // FIXME: Support for passing functions to get the parameter names.
     bool passed_thread = lua_gettop(lua_state) >= 3;
+    if (passed_thread)
+        luaL_argcheck(lua_state, lua_isthread(lua_state, 1), 1, "Expected thread");
     lua_State* thread = passed_thread ? lua_tothread(lua_state, 1) : lua_state;
-    int level = lua_tonumber(lua_state, passed_thread ? 2 : 1);
-    int index = lua_tonumber(lua_state, passed_thread ? 3 : 2);
+    int level = luaL_checknumber(lua_state, passed_thread ? 2 : 1);
+    int index = luaL_checknumber(lua_state, passed_thread ? 3 : 2);
 
     lua_Debug ar {};
     lua_getstack(thread, level, &ar);

@@ -4,10 +4,11 @@
 // https://wiki.facepunch.com/gmod/hook.Add
 int CLuaBase::lua$hook_Add()
 {
-    std::string event_name = lua_tostring(lua_state, 1);
-    std::string identifier = lua_tostring(lua_state, 2);
+    std::string event_name = luaL_checkstring(lua_state, 1);
+    std::string identifier = luaL_checkstring(lua_state, 2);
 
     // Note: Closures can't be transferred into a raw C value, so we'll have to use references.
+    luaL_argcheck(lua_state, lua_isfunction(lua_state, 3), 3, "Expected function");
     lua_pushvalue(lua_state, 3);
     int func = luaL_ref(lua_state, LUA_REGISTRYINDEX);
 
@@ -26,8 +27,9 @@ int CLuaBase::lua$hook_Add()
 // https://wiki.facepunch.com/gmod/hook.Call
 int CLuaBase::lua$hook_Call()
 {
-    std::string event_name = lua_tostring(lua_state, 1);
+    std::string event_name = luaL_checkstring(lua_state, 1);
     // FIXME: Check on the gamemode table.
+    luaL_argcheck(lua_state, lua_istable(lua_state, 2) || lua_isnil(lua_state, 2), 2, "Expected table or nil");
     lua_pushvalue(lua_state, 2);
     int gamemode_table_ref = luaL_ref(lua_state, LUA_REGISTRYINDEX);
     int number_of_arguments = lua_gettop(lua_state) - 2;
@@ -82,8 +84,8 @@ int CLuaBase::lua$hook_GetTable()
 // https://wiki.facepunch.com/gmod/hook.Remove
 int CLuaBase::lua$hook_Remove()
 {
-    std::string event_name = lua_tostring(lua_state, 1);
-    std::string identifier = lua_tostring(lua_state, 2);
+    std::string event_name = luaL_checkstring(lua_state, 1);
+    std::string identifier = luaL_checkstring(lua_state, 2);
 
     if (!registered_hooks.contains(event_name))
         return 0;
@@ -99,7 +101,7 @@ int CLuaBase::lua$hook_Remove()
 // https://wiki.facepunch.com/gmod/hook.Run
 int CLuaBase::lua$hook_Run()
 {
-    std::string event_name = lua_tostring(lua_state, 1);
+    std::string event_name = luaL_checkstring(lua_state, 1);
     int number_of_arguments = lua_gettop(lua_state) - 1;
     int stack_top_without_args = lua_gettop(lua_state);
 
