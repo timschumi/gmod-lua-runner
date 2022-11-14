@@ -15,6 +15,8 @@ int CLuaBase::lua$table_Add()
 
         lua_settable(lua_state, 1);
     }
+
+    lua_pushvalue(lua_state, 1);
     return 1;
 }
 
