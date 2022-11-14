@@ -9,7 +9,7 @@ int main(int argc, char const** argv)
 {
     std::string original_directory = std::filesystem::current_path().generic_string();
 
-    std::string directory_from_env = getenv("GMOD_DIR") ?: std::filesystem::path(argv[0]).parent_path().generic_string();
+    std::filesystem::path directory_from_env = std::filesystem::absolute(getenv("GMOD_DIR") ?: std::filesystem::path(argv[0]).parent_path());
 
     if (chdir(directory_from_env.c_str()) < 0) {
         fprintf(stderr, "Failed to change directory to '%s': %s\n", directory_from_env.c_str(), strerror(errno));
