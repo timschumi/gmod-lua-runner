@@ -103,7 +103,7 @@ int CLuaBase::print_error_with_stack_trace(lua_State* lua_state)
         if (lua_getinfo(lua_state, "nSl", &ar) == 0)
             continue;
 
-        fprintf(stderr, "%d. %s - %s:%d\n", level, ar.name ?: "unknown", ar.short_src, ar.currentline);
+        fprintf(stderr, "%*s%d. %s - %s:%d\n", level, "", level, ar.name ?: "unknown", ar.short_src, ar.currentline);
 
         level++;
     }
