@@ -5,7 +5,7 @@
 
 #define ARGUMENT_LIMIT 3
 
-static int stub_lua_function(lua_State* state)
+static int stub_lua_function(lua_State*)
 {
     return 0;
 }
@@ -32,11 +32,6 @@ static bool call_with_generated_arguments(CLuaBase& lua_base, size_t argument_li
     if (waitpid(child, &child_status, 0) < 0) {
         perror("waitpid failed");
         exit(1);
-    }
-
-    if (WIFEXITED(child_status) && WEXITSTATUS(child_status) != 0) {
-        printf("child exited abnormally\n");
-        return false;
     }
 
     if (WIFSIGNALED(child_status)) {
