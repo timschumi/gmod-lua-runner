@@ -6,7 +6,7 @@ hook.Add("GLuaTest_LoggedTestFailure", "record_end_result", function(errInfo)
     table.insert(failed_tests, errInfo)
 end)
 
-GLuaTest.runAllTests()
+hook.Run("Tick")
 
 if #failed_tests > 0 then
     print("Failed " .. #failed_tests .. " tests:")
