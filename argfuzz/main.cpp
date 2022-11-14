@@ -3,7 +3,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define ARGUMENT_LIMIT 3
+#define ARGUMENT_LIMIT 5
 
 static int stub_lua_function(lua_State*)
 {
