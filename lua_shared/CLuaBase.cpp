@@ -93,6 +93,14 @@ int CLuaBase::print_error_with_stack_trace(lua_State* lua_state)
 
     fprintf(stderr, "%s\n", message);
 
+    print_stack_trace(lua_state);
+
+    lua_pushstring(lua_state, message);
+    return 1;
+}
+
+int CLuaBase::print_stack_trace(lua_State* lua_state)
+{
     int level = 1;
     while (true) {
         lua_Debug ar {};
@@ -108,8 +116,7 @@ int CLuaBase::print_error_with_stack_trace(lua_State* lua_state)
         level++;
     }
 
-    lua_pushstring(lua_state, message);
-    return 1;
+    return 0;
 }
 
 bool CLuaBase::is_active()

@@ -132,6 +132,7 @@ public:
 
     int load_file(char const* path);
     static int print_error_with_stack_trace(lua_State* state);
+    static int print_stack_trace(lua_State* state);
 
     bool is_active();
     void run_event_loop();
