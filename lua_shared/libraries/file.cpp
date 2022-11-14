@@ -97,6 +97,9 @@ int CLuaBase::lua$file_Find()
 
         full_name = full_name.substr(0, full_name.size() - 2);
 
+        if (!std::filesystem::exists(full_name))
+            continue;
+
         for (auto const& dir_entry : std::filesystem::directory_iterator { full_name }) {
             // Remove search prefix from the file path.
             auto file_path = dir_entry.path().generic_string();
