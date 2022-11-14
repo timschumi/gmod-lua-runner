@@ -31,6 +31,9 @@ int main(int argc, char const** argv)
     lua_base.PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
     lua_base.CreateTable();
 
+    lua_base.PushNumber(0);
+    lua_base.SetField(-2, "return_value");
+
     lua_base.PushString(directory_from_env.c_str(), 0);
     lua_base.SetField(-2, "root");
 
@@ -50,7 +53,18 @@ int main(int argc, char const** argv)
     if (result != CLuaBase::Success)
         return 1;
 
-    int return_value = lua_base.Top() > top_before_script ? static_cast<int>(lua_base.CheckNumber(-1)) : 0;
+    bool has_return_values = lua_base.Top() > top_before_script;
+    int return_value = has_return_values ? static_cast<int>(lua_base.CheckNumber(-1)) : 0;
+
     lua_base.run_event_loop();
+
+    if (!has_return_values) {
+        lua_base.PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
+        lua_base.GetField(-1, "runner");
+        lua_base.GetField(-1, "return_value");
+        return_value = lua_base.CheckNumber(-1);
+        lua_base.Pop(3);
+    }
+
     return return_value;
 }
