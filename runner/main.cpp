@@ -28,6 +28,15 @@ int main(int argc, char const** argv)
 
     CLuaBase lua_base;
 
+    lua_base.PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
+    lua_base.CreateTable();
+
+    lua_base.PushString(directory_from_env.c_str(), 0);
+    lua_base.SetField(-2, "root");
+
+    lua_base.SetField(-2, "runner");
+    lua_base.Pop(1);
+
     if (std::filesystem::exists("garrysmod/lua/autorun")) {
         for (auto const& entry : std::filesystem::directory_iterator("garrysmod/lua/autorun")) {
             if (lua_base.load_and_run_file_or_show_error(entry.path().c_str()) != CLuaBase::Success)
