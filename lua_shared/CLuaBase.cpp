@@ -175,14 +175,17 @@ void CLuaBase::run_event_loop()
 
         // Run timers whose cooldowns have expired.
         std::list<int> timers_to_run;
+        std::list<std::string> keys_to_drop;
         for (auto& timer : timers) {
             if (timer.second.cooldown > 0)
                 continue;
 
             if (timer.second.repetitions.has_value()) {
                 auto& repetitions = timer.second.repetitions.value();
-                if (repetitions <= 0)
+                if (repetitions <= 0) {
+                    keys_to_drop.push_back(timer.first);
                     continue;
+                }
 
                 repetitions -= 1;
             }
@@ -193,6 +196,10 @@ void CLuaBase::run_event_loop()
         for (auto timer : timers_to_run) {
             lua_rawgeti(lua_state, LUA_REGISTRYINDEX, timer);
             lua_call(lua_state, 0, 0);
+        }
+        for (auto const& key : keys_to_drop) {
+            luaL_unref(lua_state, LUA_REGISTRYINDEX, timers[key].function);
+            timers.erase(key);
         }
 
         // Shift everything by 1/66th of a second.
