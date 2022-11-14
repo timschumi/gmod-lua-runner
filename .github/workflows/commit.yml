@@ -85,3 +85,7 @@ jobs:
     - name: Run tests
       run: |
         GMOD_DIR=root ./build/runner/runner test.lua
+
+    - name: Run argfuzz
+      run: |
+        ./build/argfuzz/argfuzz
