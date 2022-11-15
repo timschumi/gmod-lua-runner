@@ -1,4 +1,5 @@
 set(SOURCES
+    api.cpp
     CLuaBase.cpp
     libraries/base.cpp
     libraries/concommand.cpp
