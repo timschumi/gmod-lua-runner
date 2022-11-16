@@ -9,7 +9,7 @@ int main(int argc, char const** argv)
 {
     std::string original_directory = std::filesystem::current_path().generic_string();
 
-    std::filesystem::path directory_from_env = std::filesystem::absolute(getenv("GMOD_DIR") ?: std::filesystem::path(argv[0]).parent_path());
+    std::string directory_from_env = std::filesystem::absolute(getenv("GMOD_DIR") ?: std::filesystem::path(argv[0]).parent_path()).string();
 
     if (chdir(directory_from_env.c_str()) < 0) {
         fprintf(stderr, "Failed to change directory to '%s': %s\n", directory_from_env.c_str(), strerror(errno));
@@ -43,7 +43,7 @@ int main(int argc, char const** argv)
     if (std::filesystem::exists("garrysmod/lua/autorun")) {
         lua_base.PushCFunction(CLuaBase::print_error_with_stack_trace);
         for (auto const& entry : std::filesystem::directory_iterator("garrysmod/lua/autorun")) {
-            if (lua_base.load_file(entry.path().c_str()) != 0) {
+            if (lua_base.load_file(entry.path().string().c_str()) != 0) {
                 fprintf(stderr, "%s\n", lua_base.CheckString(-1));
                 return 1;
             }
