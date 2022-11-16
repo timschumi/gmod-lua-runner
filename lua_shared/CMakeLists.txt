@@ -13,7 +13,11 @@ set(SOURCES
     libraries/timer.cpp
 )
 
-add_library(lua_shared SHARED ${SOURCES})
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+    add_library(lua_shared STATIC ${SOURCES})
+else()
+    add_library(lua_shared SHARED ${SOURCES})
+endif()
 set_target_properties(lua_shared PROPERTIES PREFIX "")
 target_link_libraries(lua_shared PUBLIC gmod-module-base)
 target_link_libraries(lua_shared PRIVATE luajit tier0 ${CMAKE_DL_LIBS})

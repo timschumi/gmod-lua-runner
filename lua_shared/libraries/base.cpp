@@ -1,6 +1,10 @@
 #include "CLuaBase.h"
-#include <dlfcn.h>
+#include <cassert>
 #include <lua.hpp>
+
+#ifdef __linux__
+#    include <dlfcn.h>
+#endif
 
 // https://wiki.facepunch.com/gmod/Global.assert
 int CLuaBase::lua$assert()
@@ -375,6 +379,7 @@ int CLuaBase::lua$PrintTable()
 // https://wiki.facepunch.com/gmod/Global.require
 int CLuaBase::lua$require()
 {
+#ifdef __linux__
     char const* format = "garrysmod/lua/bin/gmsv_%s_" GMOD_MODULE_ARCH ".dll";
     std::string module_name = luaL_checkstring(lua_state, 1);
 
@@ -399,6 +404,9 @@ int CLuaBase::lua$require()
     lua_call(lua_state, 0, 0);
 
     loaded_module_handles[module_name] = library_handle;
+#else
+    assert(false);
+#endif
 
     return 0;
 }
@@ -528,6 +536,7 @@ int CLuaBase::lua$xpcall()
 
 void CLuaBase::unload_modules()
 {
+#ifdef __linux__
     for (auto const& handle : loaded_module_handles) {
         auto library_fini_function = reinterpret_cast<lua_CFunction>(dlsym(handle.second, "gmod13_close"));
         if (!library_fini_function) {
@@ -542,4 +551,7 @@ void CLuaBase::unload_modules()
     }
 
     loaded_module_handles.clear();
+#else
+    assert(false);
+#endif
 }
