@@ -6,7 +6,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        target: [linux64, win64]
+
     steps:
+    - name: Install mingw-w64
+      if: ${{ startsWith(matrix.target, 'win') }}
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mingw-w64
+
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
@@ -15,7 +25,7 @@ jobs:
 
     - name: Build binaries
       run: |
-        cmake -B build -DCMAKE_TOOLCHAIN_FILE=toolchain-linux64.cmake
+        cmake -B build -DCMAKE_TOOLCHAIN_FILE=toolchain-${{ matrix.target }}.cmake
         cmake --build build --target package
 
     - name: Upload binaries
