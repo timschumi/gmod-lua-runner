@@ -13,16 +13,9 @@ jobs:
         fetch-depth: 0
         submodules: true
 
-    - name: Configure project
-      run: |
-        cmake -B build -DCMAKE_TOOLCHAIN_FILE=toolchain-linux64.cmake
-
     - name: Build binaries
       run: |
-        cmake --build build
-
-    - name: Package binaries
-      run: |
+        cmake -B build -DCMAKE_TOOLCHAIN_FILE=toolchain-linux64.cmake
         cmake --build build --target package
 
     - name: Upload binaries
