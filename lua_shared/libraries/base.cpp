@@ -6,6 +6,10 @@
 #    include <dlfcn.h>
 #endif
 
+#ifdef _WIN32
+#    include <windows.h>
+#endif
+
 // https://wiki.facepunch.com/gmod/Global.assert
 int CLuaBase::lua$assert()
 {
@@ -379,7 +383,6 @@ int CLuaBase::lua$PrintTable()
 // https://wiki.facepunch.com/gmod/Global.require
 int CLuaBase::lua$require()
 {
-#ifdef __linux__
     char const* format = "garrysmod/lua/bin/gmsv_%s_" GMOD_MODULE_ARCH ".dll";
     std::string module_name = luaL_checkstring(lua_state, 1);
 
@@ -390,6 +393,7 @@ int CLuaBase::lua$require()
     char full_name[formatted_name_length + 1];
     snprintf(full_name, sizeof(full_name), format, module_name.c_str());
 
+#if defined(__linux__)
     void* library_handle = dlopen(full_name, RTLD_LAZY);
     if (!library_handle) {
         return luaL_error(lua_state, "dlopen failed: %s", dlerror());
@@ -399,14 +403,22 @@ int CLuaBase::lua$require()
     if (!library_init_function) {
         return luaL_error(lua_state, "dlsym failed: %s", dlerror());
     }
+#elif defined(_WIN32)
+    HINSTANCE library_handle = LoadLibrary(full_name);
+    if (!library_handle)
+        return luaL_error(lua_state, "LoadLibrary failed");
+
+    auto library_init_function = reinterpret_cast<lua_CFunction>(GetProcAddress(library_handle, "gmod13_open"));
+    if (!library_init_function)
+        return luaL_error(lua_state, "Failed to find module initialization function");
+#else
+    assert(false);
+#endif
 
     lua_pushcfunction(lua_state, library_init_function);
     lua_call(lua_state, 0, 0);
 
     loaded_module_handles[module_name] = library_handle;
-#else
-    assert(false);
-#endif
 
     return 0;
 }
@@ -536,8 +548,8 @@ int CLuaBase::lua$xpcall()
 
 void CLuaBase::unload_modules()
 {
-#ifdef __linux__
     for (auto const& handle : loaded_module_handles) {
+#if defined(__linux__)
         auto library_fini_function = reinterpret_cast<lua_CFunction>(dlsym(handle.second, "gmod13_close"));
         if (!library_fini_function) {
             fprintf(stderr, "dlsym failed: %s\n", dlerror());
@@ -548,10 +560,21 @@ void CLuaBase::unload_modules()
         lua_call(lua_state, 0, 0);
 
         dlclose(handle.second);
+#elif defined(_WIN32)
+        auto library_fini_function = reinterpret_cast<lua_CFunction>(GetProcAddress(reinterpret_cast<HMODULE>(handle.second), "gmod13_close"));
+        if (!library_fini_function) {
+            fprintf(stderr, "Failed to find module deinitialization function\n");
+            continue;
+        }
+
+        lua_pushcfunction(lua_state, library_fini_function);
+        lua_call(lua_state, 0, 0);
+
+        FreeLibrary(reinterpret_cast<HMODULE>(handle.second));
+#else
+        assert(false);
+#endif
     }
 
     loaded_module_handles.clear();
-#else
-    assert(false);
-#endif
 }
