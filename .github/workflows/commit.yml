@@ -4,13 +4,20 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
-        target: [linux64, win64]
+        target: [linux, linux64, win32, win64]
 
     steps:
+    - name: Install g++-i686-linux-gnu
+      if: ${{ matrix.target == 'linux' }}
+      working-directory: '/tmp'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++-i686-linux-gnu
+
     - name: Install mingw-w64
       if: ${{ startsWith(matrix.target, 'win') }}
       working-directory: '/tmp'
@@ -57,7 +64,7 @@ jobs:
         run: git diff --exit-code
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout repository

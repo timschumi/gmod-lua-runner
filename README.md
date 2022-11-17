@@ -19,9 +19,9 @@ iced tea](https://paypal.me/schumact)!
 
 ### Building
 
-**Note:** Automatic builds for the `linux64` architecture are done by GitHub for each
-commit on an Ubuntu 22.04 host. Since no tagged releases exist yet, those builds can
-only be downloaded via the artifacts package on [one of the CI runs](https://github.com/timschumi/gmod-lua-runner/actions).
+**Note:** Automatic builds are done by GitHub for each commit on an Ubuntu 22.04 host.
+Since no tagged releases exist yet, those builds can only be downloaded via the artifacts
+package on [one of the CI runs](https://github.com/timschumi/gmod-lua-runner/actions).
 
 The project is contained within one big CMake project, and can be built as such.
 However, attention has to be paid to the fact that the repository features submodules,
@@ -31,9 +31,6 @@ which need to be cloned by passing `--recursive` to the clone command or by runn
 Building the project also requires selecting the correct toolchain file by passing
 `-DCMAKE_TOOLCHAIN_FILE=toolchain-<arch>.cmake` to the configure command, with
 `toolchain-<arch>.cmake` being one of the files that are found in the repository root.
-Note that support for 32-bit Linux is incomplete at the moment (as the resulting
-LuaJIT binary is not actually a 32-bit executable), and support for Windows is missing
-entirely.
 
 ### Running scripts
 
