@@ -1,0 +1,76 @@
+name: New Version Tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        target: [linux, linux64, win32, win64]
+
+    steps:
+    - name: Install multilib packages
+      if: ${{ matrix.target == 'linux' || matrix.target == 'win32' }}
+      working-directory: '/tmp'
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install -y g++-multilib linux-libc-dev:i386
+
+    - name: Install g++-i686-linux-gnu
+      if: ${{ matrix.target == 'linux' }}
+      working-directory: '/tmp'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++-i686-linux-gnu
+
+    - name: Install mingw-w64
+      if: ${{ startsWith(matrix.target, 'win') }}
+      working-directory: '/tmp'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mingw-w64
+        wget http://archive.ubuntu.com/ubuntu/pool/universe/m/mingw-w64/mingw-w64{,-common,-i686-dev,-x86-64-dev}_10.0.0-2_all.deb
+        sudo dpkg -i mingw-w64{,-common,-i686-dev,-x86-64-dev}_10.0.0-2_all.deb
+
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        submodules: true
+
+    - name: Build binaries
+      run: |
+        cmake -B build -DCMAKE_TOOLCHAIN_FILE=toolchain-${{ matrix.target }}.cmake
+        cmake --build build --target package
+
+    - name: Upload binaries
+      uses: actions/upload-artifact@v3
+      with:
+        name: binaries
+        path: build/gmod-lua-runner-*.tar.gz
+
+  release:
+    runs-on: ubuntu-22.04
+    needs: build
+
+    steps:
+    - name: Download built binaries
+      uses: actions/download-artifact@v3
+      with:
+        name: binaries
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: true
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        token: ${{ secrets.RELEASE_TOKEN }}
+        files: |
+          gmod-lua-runner-*.tar.gz
