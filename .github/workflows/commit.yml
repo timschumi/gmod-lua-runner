@@ -11,6 +11,13 @@ jobs:
         target: [linux, linux64, win32, win64]
 
     steps:
+    - name: Install g++-multilib
+      if: ${{ matrix.target == 'linux' || matrix.target == 'win32' }}
+      working-directory: '/tmp'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++-multilib
+
     - name: Install g++-i686-linux-gnu
       if: ${{ matrix.target == 'linux' }}
       working-directory: '/tmp'
