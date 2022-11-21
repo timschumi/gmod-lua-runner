@@ -86,6 +86,8 @@ changed from there as well.
 The global `runner` table also contains other values that relate to the environment outside of Lua.
 At this point, this includes the following:
 
+- `runner.return_value`: A number that specifies the default return value in case the main script does
+  not return a value. Has the intended effect when modified from inside Lua.
 - `runner.root`: The path where the `garrysmod` directory can be found. This is either the full path
   to the directory that was set through `GMOD_DIR` or (if the former is not set) the path to the `runner`
   executable itself.
