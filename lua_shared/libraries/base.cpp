@@ -10,25 +10,6 @@
 #    include <windows.h>
 #endif
 
-// https://wiki.facepunch.com/gmod/Global.assert
-int CLuaBase::lua$assert()
-{
-    bool expression = lua_toboolean(lua_state, 1);
-    std::string error_message = lua_gettop(lua_state) >= 2 ? luaL_checkstring(lua_state, 2) : "assertion failed!";
-    int number_of_varargs = lua_gettop(lua_state) - 2;
-
-    if (!expression) {
-        lua_pushstring(lua_state, error_message.c_str());
-        return lua_error(lua_state);
-    }
-
-    lua_pushvalue(lua_state, 1);
-    lua_pushvalue(lua_state, 2);
-    for (int i = 1; i <= number_of_varargs; i++)
-        lua_pushvalue(lua_state, 2 + i);
-    return 2 + number_of_varargs;
-}
-
 // https://wiki.facepunch.com/gmod/Global.Color
 int CLuaBase::lua$meta$Color_eq()
 {
@@ -135,15 +116,6 @@ int CLuaBase::lua$CurTime()
     return 1;
 }
 
-// https://wiki.facepunch.com/gmod/Global.error(lowercase)
-int CLuaBase::lua$error()
-{
-    // FIXME: No support for errorLevel.
-
-    lua_pushvalue(lua_state, 1);
-    return lua_error(lua_state);
-}
-
 // https://wiki.facepunch.com/gmod/Global.ErrorNoHaltWithStack
 int CLuaBase::lua$ErrorNoHaltWithStack()
 {
@@ -183,20 +155,6 @@ int CLuaBase::lua$GetConVar()
     return 1;
 }
 
-// https://wiki.facepunch.com/gmod/Global.getfenv
-int CLuaBase::lua$getfenv()
-{
-    if (lua_type(lua_state, 1) == LUA_TNUMBER) {
-        lua_Debug ar {};
-        lua_getstack(lua_state, lua_tonumber(lua_state, 1), &ar);
-        lua_getinfo(lua_state, "f", &ar);
-        lua_replace(lua_state, 1);
-    }
-
-    lua_getfenv(lua_state, 1);
-    return 1;
-}
-
 // https://wiki.facepunch.com/gmod/Global.include
 int CLuaBase::lua$include()
 {
@@ -209,30 +167,6 @@ int CLuaBase::lua$include()
     lua_call(lua_state, 0, LUA_MULTRET);
 
     return lua_gettop(lua_state) - initial_top;
-}
-
-static int ipairs_iterator(lua_State* lua_state)
-{
-    lua_pushnumber(lua_state, luaL_checknumber(lua_state, 2) + 1);
-    lua_replace(lua_state, 2);
-
-    if (luaL_checknumber(lua_state, 2) > lua_objlen(lua_state, 1))
-        return 0;
-
-    lua_pushvalue(lua_state, 2);
-    lua_pushvalue(lua_state, 2);
-    lua_gettable(lua_state, 1);
-
-    return 2;
-}
-
-// https://wiki.facepunch.com/gmod/Global.ipairs
-int CLuaBase::lua$ipairs()
-{
-    lua_pushcfunction(lua_state, ipairs_iterator);
-    lua_pushvalue(lua_state, 1);
-    lua_pushnumber(lua_state, 0);
-    return 3;
 }
 
 // https://wiki.facepunch.com/gmod/Global.istable
@@ -274,71 +208,6 @@ int CLuaBase::lua$MsgC()
         lua_pop(lua_state, 1);
     }
     printf("\x1b[39m");
-    return 0;
-}
-
-// https://wiki.facepunch.com/gmod/Global.next
-int CLuaBase::lua$next()
-{
-    luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
-
-    if (lua_gettop(lua_state) >= 2)
-        lua_pushvalue(lua_state, 2);
-    else
-        lua_pushnil(lua_state);
-    if (lua_next(lua_state, 1) == 0) {
-        lua_pushnil(lua_state);
-        lua_pushnil(lua_state);
-    }
-    return 2;
-}
-
-// https://wiki.facepunch.com/gmod/Global.pairs
-int CLuaBase::lua$pairs()
-{
-    lua_pushcfunction(lua_state, lua$next$entry);
-    lua_pushvalue(lua_state, 1);
-    lua_pushnil(lua_state);
-    return 3;
-}
-
-// https://wiki.facepunch.com/gmod/Global.pcall
-int CLuaBase::lua$pcall()
-{
-    int top_of_stack = lua_gettop(lua_state);
-    int number_of_varargs = top_of_stack - 1;
-
-    luaL_argcheck(lua_state, lua_isfunction(lua_state, 1), 1, "Expected function");
-    lua_pushvalue(lua_state, 1);
-    for (int i = 1; i <= number_of_varargs; i++) {
-        lua_pushvalue(lua_state, 1 + i);
-    }
-
-    int result = lua_pcall(lua_state, number_of_varargs, LUA_MULTRET, 0);
-
-    int number_of_returned_values = lua_gettop(lua_state) - top_of_stack;
-    lua_pushboolean(lua_state, result == LUA_OK);
-    lua_insert(lua_state, -number_of_returned_values - 1);
-    return number_of_returned_values + 1;
-}
-
-// https://wiki.facepunch.com/gmod/Global.print
-int CLuaBase::lua$print()
-{
-    int nargs = lua_gettop(lua_state);
-
-    for (int i = 1; i <= nargs; i++) {
-        lua_pushcfunction(lua_state, lua$tostring$entry);
-        lua_pushvalue(lua_state, i);
-        lua_call(lua_state, 1, 1);
-        printf("%s", lua_tostring(lua_state, -1));
-        lua_pop(lua_state, 1);
-
-        if (i < nargs)
-            printf("\t");
-    }
-
-    printf("\n");
     return 0;
 }
 
@@ -421,129 +290,6 @@ int CLuaBase::lua$require()
     loaded_module_handles[module_name] = library_handle;
 
     return 0;
-}
-
-// https://wiki.facepunch.com/gmod/Global.setfenv
-int CLuaBase::lua$setfenv()
-{
-    bool function_passed = true;
-    if (lua_type(lua_state, 1) == LUA_TNUMBER) {
-        function_passed = false;
-        lua_Debug ar {};
-        lua_getstack(lua_state, lua_tonumber(lua_state, 1), &ar);
-        lua_getinfo(lua_state, "f", &ar);
-        lua_replace(lua_state, 1);
-    }
-
-    luaL_argcheck(lua_state, lua_isfunction(lua_state, 1), 1, "Expected function");
-    luaL_argcheck(lua_state, lua_istable(lua_state, 2), 2, "Expected table");
-
-    lua_pushvalue(lua_state, 2);
-    lua_setfenv(lua_state, 1);
-
-    if (function_passed)
-        lua_pushvalue(lua_state, 1);
-    else
-        lua_pushnil(lua_state);
-    return 1;
-}
-
-// https://wiki.facepunch.com/gmod/Global.setmetatable
-int CLuaBase::lua$setmetatable()
-{
-    lua_pushvalue(lua_state, 2);
-    lua_setmetatable(lua_state, 1);
-
-    lua_pushvalue(lua_state, 1);
-    return 1;
-}
-
-// https://wiki.facepunch.com/gmod/Global.tostring
-int CLuaBase::lua$tostring()
-{
-    // FIXME: This should use __tostring where applicable.
-    auto format_value = [&](char* buffer, size_t buffer_size) {
-        int type = lua_type(lua_state, 1);
-        switch (type) {
-        case LUA_TNIL:
-            return snprintf(buffer, buffer_size, "nil");
-        case LUA_TBOOLEAN:
-            return snprintf(buffer, buffer_size, lua_toboolean(lua_state, 1) ? "true" : "false");
-        case LUA_TNUMBER:
-            return snprintf(buffer, buffer_size, "%g", lua_tonumber(lua_state, 1));
-        case LUA_TSTRING:
-            return snprintf(buffer, buffer_size, "%s", lua_tostring(lua_state, 1));
-        case LUA_TUSERDATA: {
-            void* userdata = lua_touserdata(lua_state, 1);
-            lua_getmetatable(lua_state, 1);
-            lua_pushstring(lua_state, "__name");
-            lua_rawget(lua_state, -2);
-            char const* name = lua_tostring(lua_state, -1);
-            lua_pop(lua_state, 2);
-            return snprintf(buffer, buffer_size, "<%p:%s>", userdata, name);
-        }
-        case LUA_TTHREAD:
-            return snprintf(buffer, buffer_size, "<thread>");
-        default:
-            return snprintf(buffer, buffer_size, "<unknown type %d>", type);
-        }
-    };
-
-    int required_buffer_size = format_value(nullptr, 0) + 1;
-    char buffer[required_buffer_size];
-    format_value(buffer, required_buffer_size);
-    lua_pushstring(lua_state, buffer);
-
-    return 1;
-}
-
-// https://wiki.facepunch.com/gmod/Global.type
-int CLuaBase::lua$type()
-{
-    if (lua_gettop(lua_state) < 1) {
-        lua_pushstring(lua_state, "no value");
-        return 1;
-    }
-
-    lua_pushstring(lua_state, luaL_typename(lua_state, 1));
-    return 1;
-}
-
-// https://wiki.facepunch.com/gmod/Global.unpack
-int CLuaBase::lua$unpack()
-{
-    size_t start_index = lua_gettop(lua_state) >= 2 ? lua_tonumber(lua_state, 2) : 1;
-    size_t end_index = lua_gettop(lua_state) >= 3 ? lua_tonumber(lua_state, 3) : lua_objlen(lua_state, 1);
-
-    for (size_t i = start_index; i <= end_index; i++) {
-        lua_pushnumber(lua_state, i);
-        lua_gettable(lua_state, 1);
-    }
-
-    return end_index - start_index + 1;
-}
-
-// https://wiki.facepunch.com/gmod/Global.xpcall
-int CLuaBase::lua$xpcall()
-{
-    int top_of_stack = lua_gettop(lua_state);
-    int number_of_varargs = top_of_stack - 2;
-
-    lua_pushvalue(lua_state, 1);
-    for (int i = 1; i <= number_of_varargs; i++)
-        lua_pushvalue(lua_state, 2 + i);
-    int ret = lua_pcall(lua_state, number_of_varargs, LUA_MULTRET, 2);
-
-    if (ret == 0) {
-        int number_of_return_values = lua_gettop(lua_state) - top_of_stack + 1;
-        lua_pushboolean(lua_state, true);
-        lua_insert(lua_state, -number_of_return_values);
-        return number_of_return_values;
-    }
-
-    lua_pushboolean(lua_state, false);
-    lua_insert(lua_state, -2);
-    return 2;
 }
 
 void CLuaBase::unload_modules()

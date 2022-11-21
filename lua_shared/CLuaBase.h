@@ -8,30 +8,16 @@
 #include <string>
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
-    FUNCTION("assert", assert)                                      \
     FUNCTION("Color", Color)                                        \
     FUNCTION("CreateConVar", CreateConVar)                          \
     FUNCTION("CurTime", CurTime)                                    \
-    FUNCTION("error", error)                                        \
     FUNCTION("ErrorNoHaltWithStack", ErrorNoHaltWithStack)          \
     FUNCTION("GetConVar", GetConVar)                                \
-    FUNCTION("getfenv", getfenv)                                    \
     FUNCTION("include", include)                                    \
-    FUNCTION("ipairs", ipairs)                                      \
     FUNCTION("istable", istable)                                    \
     FUNCTION("MsgC", MsgC)                                          \
-    FUNCTION("next", next)                                          \
-    FUNCTION("pairs", pairs)                                        \
-    FUNCTION("pcall", pcall)                                        \
-    FUNCTION("print", print)                                        \
     FUNCTION("PrintTable", PrintTable)                              \
     FUNCTION("require", require)                                    \
-    FUNCTION("setfenv", setfenv)                                    \
-    FUNCTION("setmetatable", setmetatable)                          \
-    FUNCTION("tostring", tostring)                                  \
-    FUNCTION("type", type)                                          \
-    FUNCTION("unpack", unpack)                                      \
-    FUNCTION("xpcall", xpcall)                                      \
     MODULE_START("concommand")                                      \
     FUNCTION("Add", concommand_Add)                                 \
     MODULE_END()                                                    \
@@ -184,6 +170,9 @@ private:
 #undef DECLARE_LUA_FUNCTION
 #undef DECLARE_LUA_MODULE_START
 #undef DECLARE_LUA_MODULE_END
+
+    // Not really a full implementation, just a shim that delegates to the existing implementation.
+    static int lua$tostring$entry(lua_State* state);
 
     // Metatables.
 #define NOOP0()

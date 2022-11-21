@@ -11,6 +11,7 @@ CLuaBase::CLuaBase()
     lua_state = luaL_newstate();
     lua_state->luabase = this;
 
+    luaopen_base(lua_state);
     luaopen_debug(lua_state);
     luaopen_math(lua_state);
     luaopen_string(lua_state);
@@ -193,6 +194,15 @@ void CLuaBase::run_event_loop()
         for (auto& timer : timers)
             timer.second.cooldown -= delta;
     }
+}
+
+int CLuaBase::lua$tostring$entry(lua_State* lua_state)
+{
+    lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
+    lua_getfield(lua_state, -1, "tostring");
+    lua_pushvalue(lua_state, 1);
+    lua_call(lua_state, 1, 1);
+    return 1;
 }
 
 int CLuaBase::Top()
