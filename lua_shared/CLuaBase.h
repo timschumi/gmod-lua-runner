@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GarrysMod/Lua/Interface.h>
+#include <functional>
 #include <list>
 #include <map>
 #include <optional>
@@ -135,6 +136,8 @@ public:
     static int print_stack_trace(lua_State* state);
 
     bool is_active();
+    std::optional<std::function<std::optional<bool>(GarrysMod::Lua::ILuaBase*)>> is_active_override;
+
     void run_event_loop();
 
 private:

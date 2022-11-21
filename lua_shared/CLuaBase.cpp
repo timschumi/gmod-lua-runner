@@ -121,6 +121,13 @@ int CLuaBase::print_stack_trace(lua_State* lua_state)
 
 bool CLuaBase::is_active()
 {
+    if (is_active_override.has_value()) {
+        auto result = is_active_override.value()(this);
+
+        if (result.has_value())
+            return result.value();
+    }
+
     for (auto coroutine : coroutines) {
         int coroutine_status = lua_status(coroutine);
 

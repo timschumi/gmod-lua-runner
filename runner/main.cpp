@@ -65,6 +65,20 @@ int main(int argc, char const** argv)
     bool has_return_values = lua_base.Top() > top_before_script;
     int return_value = has_return_values ? static_cast<int>(lua_base.CheckNumber(-1)) : 0;
 
+    lua_base.is_active_override = [](GarrysMod::Lua::ILuaBase* LUA) -> std::optional<bool> {
+        LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
+        LUA->GetField(-1, "runner");
+        LUA->GetField(-1, "active");
+        bool is_present = LUA->GetType(-1) != GarrysMod::Lua::Type::Nil;
+        bool is_active = LUA->GetBool(-1);
+        LUA->Pop(3);
+
+        if (!is_present)
+            return {};
+
+        return is_active;
+    };
+
     lua_base.run_event_loop();
 
     if (!has_return_values) {

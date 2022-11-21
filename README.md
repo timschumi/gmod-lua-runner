@@ -86,6 +86,9 @@ changed from there as well.
 The global `runner` table also contains other values that relate to the environment outside of Lua.
 At this point, this includes the following:
 
+- `runner.active`: If non-nil, decides whether the runner should still be considered active. A truthy
+  value will keep the runner alive even if no running coroutines or non-infinite timers are
+  present. A falsy value will stop the runner even if coroutines or timers are detected.
 - `runner.return_value`: A number that specifies the default return value in case the main script does
   not return a value. Has the intended effect when modified from inside Lua.
 - `runner.root`: The path where the `garrysmod` directory can be found. This is either the full path
