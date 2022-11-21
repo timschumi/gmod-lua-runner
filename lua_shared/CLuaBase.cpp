@@ -13,6 +13,8 @@ CLuaBase::CLuaBase()
 
     luaopen_debug(lua_state);
     luaopen_math(lua_state);
+    luaopen_string(lua_state);
+    luaopen_table(lua_state);
 
     lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
 

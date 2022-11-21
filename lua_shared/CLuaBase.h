@@ -55,20 +55,14 @@
     MODULE_START("string")                                          \
     FUNCTION("EndsWith", string_EndsWith)                           \
     FUNCTION("Explode", string_Explode)                             \
-    FUNCTION("format", string_format)                               \
-    FUNCTION("match", string_match)                                 \
-    FUNCTION("rep", string_rep)                                     \
     FUNCTION("Right", string_Right)                                 \
     FUNCTION("Split", string_Split)                                 \
     FUNCTION("StartWith", string_StartWith)                         \
     MODULE_END()                                                    \
     MODULE_START("table")                                           \
     FUNCTION("Add", table_Add)                                      \
-    FUNCTION("concat", table_concat)                                \
     FUNCTION("Count", table_Count)                                  \
     FUNCTION("Inherit", table_Inherit)                              \
-    FUNCTION("insert", table_insert)                                \
-    FUNCTION("remove", table_remove)                                \
     MODULE_END()                                                    \
     MODULE_START("timer")                                           \
     FUNCTION("Create", timer_Create)                                \
