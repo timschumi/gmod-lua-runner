@@ -7,7 +7,7 @@
 
 int main(int argc, char const** argv)
 {
-    std::string original_directory = std::filesystem::current_path().generic_string();
+    std::filesystem::path original_directory = std::filesystem::current_path();
 
     std::string directory_from_env = std::filesystem::absolute(getenv("GMOD_DIR") ?: std::filesystem::path(argv[0]).parent_path()).string();
 
@@ -21,10 +21,10 @@ int main(int argc, char const** argv)
         return 1;
     }
 
-    std::string script_path = argv[1];
+    std::filesystem::path script_path = argv[1];
 
-    if (!script_path.starts_with('/'))
-        script_path = original_directory + "/" + script_path;
+    if (!script_path.is_absolute())
+        script_path = original_directory / script_path;
 
     CLuaBase lua_base;
 
@@ -55,7 +55,7 @@ int main(int argc, char const** argv)
 
     lua_base.PushCFunction(CLuaBase::print_error_with_stack_trace);
     auto top_before_script = lua_base.Top();
-    if (lua_base.load_file(script_path.c_str()) != 0) {
+    if (lua_base.load_file(script_path.string().c_str()) != 0) {
         fprintf(stderr, "%s\n", lua_base.CheckString(-1));
         return 1;
     }
