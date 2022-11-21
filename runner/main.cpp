@@ -8,8 +8,9 @@
 int main(int argc, char const** argv)
 {
     std::filesystem::path original_directory = std::filesystem::current_path();
+    std::filesystem::path binary_directory = std::filesystem::absolute(argv[0]).parent_path();
 
-    std::filesystem::path base_directory = getenv("GMOD_DIR") ?: std::filesystem::path(argv[0]).parent_path();
+    std::filesystem::path base_directory = getenv("GMOD_DIR") ?: binary_directory;
     if (!base_directory.is_absolute())
         base_directory = std::filesystem::absolute(base_directory);
 
