@@ -3,7 +3,6 @@
 #include <chrono>
 #include <cmath>
 #include <cstring>
-#include <limits>
 #include <lua.hpp>
 #include <thread>
 
@@ -12,15 +11,22 @@ CLuaBase::CLuaBase()
     lua_state = luaL_newstate();
     lua_state->luabase = this;
 
+    luaopen_debug(lua_state);
+    luaopen_math(lua_state);
+
     lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
 
 #define REGISTER_LUA_FUNCTION(name, impl)             \
     lua_pushstring(lua_state, name);                  \
     lua_pushcfunction(lua_state, lua$##impl##$entry); \
     lua_settable(lua_state, -3);
-#define REGISTER_LUA_MODULE_START(name) \
-    lua_pushstring(lua_state, name);    \
-    lua_newtable(lua_state);
+#define REGISTER_LUA_MODULE_START(name)        \
+    lua_pushstring(lua_state, name);           \
+    lua_getfield(lua_state, -2, name);         \
+    if (lua_type(lua_state, -1) == LUA_TNIL) { \
+        lua_newtable(lua_state);               \
+        lua_replace(lua_state, -2);            \
+    }
 #define REGISTER_LUA_MODULE_END() \
     lua_settable(lua_state, -3);
     ENUMERATE_LUA_FUNCTIONS(REGISTER_LUA_FUNCTION, REGISTER_LUA_MODULE_START, REGISTER_LUA_MODULE_END)
@@ -31,16 +37,6 @@ CLuaBase::CLuaBase()
     lua_pushstring(lua_state, "_G");
     lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
     lua_settable(lua_state, -3);
-
-    lua_pushstring(lua_state, "math");
-    lua_gettable(lua_state, -2);
-    lua_pushstring(lua_state, "huge");
-    lua_pushnumber(lua_state, std::numeric_limits<double>::max());
-    lua_settable(lua_state, -3);
-    lua_pushstring(lua_state, "pi");
-    lua_pushnumber(lua_state, M_PI);
-    lua_settable(lua_state, -3);
-    lua_pop(lua_state, 1);
 
 #define REGISTER_CONVAR_FLAG(name, value) \
     lua_pushstring(lua_state, #name);     \

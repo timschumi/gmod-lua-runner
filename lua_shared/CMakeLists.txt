@@ -4,10 +4,8 @@ set(SOURCES
     libraries/base.cpp
     libraries/concommand.cpp
     libraries/coroutine.cpp
-    libraries/debug.cpp
     libraries/file.cpp
     libraries/hook.cpp
-    libraries/math.cpp
     libraries/string.cpp
     libraries/table.cpp
     libraries/timer.cpp

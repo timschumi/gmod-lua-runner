@@ -41,10 +41,6 @@
     FUNCTION("running", coroutine_running)                          \
     FUNCTION("yield", coroutine_yield)                              \
     MODULE_END()                                                    \
-    MODULE_START("debug")                                           \
-    FUNCTION("getinfo", debug_getinfo)                              \
-    FUNCTION("getlocal", debug_getlocal)                            \
-    MODULE_END()                                                    \
     MODULE_START("file")                                            \
     FUNCTION("Find", file_Find)                                     \
     FUNCTION("Open", file_Open)                                     \
@@ -55,9 +51,6 @@
     FUNCTION("GetTable", hook_GetTable)                             \
     FUNCTION("Remove", hook_Remove)                                 \
     FUNCTION("Run", hook_Run)                                       \
-    MODULE_END()                                                    \
-    MODULE_START("math")                                            \
-    FUNCTION("min", math_min)                                       \
     MODULE_END()                                                    \
     MODULE_START("string")                                          \
     FUNCTION("EndsWith", string_EndsWith)                           \
