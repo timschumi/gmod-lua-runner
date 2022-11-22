@@ -25,8 +25,6 @@
     MODULE_START("coroutine")                                       \
     FUNCTION("create", coroutine_create)                            \
     FUNCTION("resume", coroutine_resume)                            \
-    FUNCTION("running", coroutine_running)                          \
-    FUNCTION("yield", coroutine_yield)                              \
     MODULE_END()                                                    \
     MODULE_START("file")                                            \
     FUNCTION("Find", file_Find)                                     \
