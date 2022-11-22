@@ -19,9 +19,15 @@ CLuaBase::CLuaBase()
 
     lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
 
-#define REGISTER_LUA_FUNCTION(name, impl)             \
-    lua_pushstring(lua_state, name);                  \
-    lua_pushcfunction(lua_state, lua$##impl##$entry); \
+#define REGISTER_LUA_FUNCTION(name, impl)                               \
+    lua_getfield(lua_state, -1, name);                                  \
+    if (lua_type(lua_state, -1) != LUA_TNIL) {                          \
+        lua$##impl##$original = luaL_ref(lua_state, LUA_REGISTRYINDEX); \
+    } else {                                                            \
+        lua_pop(lua_state, 1);                                          \
+    }                                                                   \
+    lua_pushstring(lua_state, name);                                    \
+    lua_pushcfunction(lua_state, lua$##impl##$entry);                   \
     lua_settable(lua_state, -3);
 #define REGISTER_LUA_MODULE_START(name)        \
     lua_pushstring(lua_state, name);           \

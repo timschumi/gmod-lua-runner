@@ -18,6 +18,7 @@
     FUNCTION("MsgC", MsgC)                                          \
     FUNCTION("PrintTable", PrintTable)                              \
     FUNCTION("require", require)                                    \
+    FUNCTION("type", type)                                          \
     MODULE_START("concommand")                                      \
     FUNCTION("Add", concommand_Add)                                 \
     MODULE_END()                                                    \
@@ -157,6 +158,7 @@ private:
 
     // Standard library implementation.
 #define DECLARE_LUA_FUNCTION(name, impl)                     \
+    int lua$##impl##$original { -1 };                        \
     static int lua$##impl##$entry(lua_State* state)          \
     {                                                        \
         auto base = dynamic_cast<CLuaBase*>(state->luabase); \

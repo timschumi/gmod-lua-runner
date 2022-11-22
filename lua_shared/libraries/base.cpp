@@ -292,6 +292,23 @@ int CLuaBase::lua$require()
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/Global.type
+int CLuaBase::lua$type()
+{
+    // The builtin implementation of type() throws an error for this case.
+    if (lua_gettop(lua_state) == 0) {
+        lua_pushstring(lua_state, "no value");
+        return 1;
+    }
+
+    assert(lua$type$original != -1);
+    lua_rawgeti(lua_state, LUA_REGISTRYINDEX, lua$type$original);
+    lua_pushvalue(lua_state, 1);
+    lua_call(lua_state, 1, 1);
+
+    return 1;
+}
+
 void CLuaBase::unload_modules()
 {
     for (auto const& handle : loaded_module_handles) {
