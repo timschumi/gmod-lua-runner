@@ -7,7 +7,6 @@ int CLuaBase::lua$coroutine_create()
     luaL_argcheck(lua_state, lua_isfunction(lua_state, 1), 1, "Expected function");
 
     auto coroutine = lua_newthread(lua_state);
-    coroutine->luabase = this;
     coroutines.push_back(coroutine);
     lua_pushvalue(lua_state, 1);
     lua_xmove(lua_state, coroutine, 1);
