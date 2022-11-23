@@ -160,10 +160,9 @@ private:
     static int lua$##impl##$entry(lua_State* state)          \
     {                                                        \
         auto base = dynamic_cast<CLuaBase*>(state->luabase); \
-        base->SetState(state);                               \
-        return base->lua$##impl();                           \
+        return base->lua$##impl(state);                      \
     }                                                        \
-    int lua$##impl();
+    int lua$##impl(lua_State* state);
 #define DECLARE_LUA_MODULE_START(name)
 #define DECLARE_LUA_MODULE_END()
     ENUMERATE_LUA_FUNCTIONS(DECLARE_LUA_FUNCTION, DECLARE_LUA_MODULE_START, DECLARE_LUA_MODULE_END)
@@ -181,10 +180,9 @@ private:
     static int lua$meta$##impl##$entry(lua_State* state)     \
     {                                                        \
         auto base = dynamic_cast<CLuaBase*>(state->luabase); \
-        base->SetState(state);                               \
-        return base->lua$meta$##impl();                      \
+        return base->lua$meta$##impl(state);                 \
     }                                                        \
-    int lua$meta$##impl();
+    int lua$meta$##impl(lua_State* state);
     ENUMERATE_METATABLES(NOOP1, NOOP0, NOOP1, NOOP0, DECLARE_METATABLE_FUNCTION)
 #undef NOOP0
 #undef NOOP1

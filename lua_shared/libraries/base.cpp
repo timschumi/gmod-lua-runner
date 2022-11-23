@@ -11,7 +11,7 @@
 #endif
 
 // https://wiki.facepunch.com/gmod/Global.Color
-int CLuaBase::lua$meta$Color_eq()
+int CLuaBase::lua$meta$Color_eq(lua_State* lua_state)
 {
 #define COMPARE_INDEX(name)                     \
     lua_pushstring(lua_state, name);            \
@@ -33,7 +33,7 @@ int CLuaBase::lua$meta$Color_eq()
 }
 
 // https://wiki.facepunch.com/gmod/Global.Color
-int CLuaBase::lua$Color()
+int CLuaBase::lua$Color(lua_State* lua_state)
 {
     int number_of_arguments = lua_gettop(lua_state);
 
@@ -64,7 +64,7 @@ int CLuaBase::lua$Color()
 }
 
 // https://wiki.facepunch.com/gmod/ConVar:GetBool
-int CLuaBase::lua$meta$ConVar_GetBool()
+int CLuaBase::lua$meta$ConVar_GetBool(lua_State* lua_state)
 {
     auto convar = static_cast<ConVar**>(luaL_checkudata(lua_state, 1, "ConVar"));
 
@@ -75,7 +75,7 @@ int CLuaBase::lua$meta$ConVar_GetBool()
 }
 
 // https://wiki.facepunch.com/gmod/ConVar:SetBool
-int CLuaBase::lua$meta$ConVar_SetBool()
+int CLuaBase::lua$meta$ConVar_SetBool(lua_State* lua_state)
 {
     auto convar = static_cast<ConVar**>(luaL_checkudata(lua_state, 1, "ConVar"));
     auto value = lua_toboolean(lua_state, 2);
@@ -86,7 +86,7 @@ int CLuaBase::lua$meta$ConVar_SetBool()
 }
 
 // https://wiki.facepunch.com/gmod/Global.CreateConVar
-int CLuaBase::lua$CreateConVar()
+int CLuaBase::lua$CreateConVar(lua_State* lua_state)
 {
     int number_of_arguments = lua_gettop(lua_state);
     std::string name = luaL_checkstring(lua_state, 1);
@@ -110,14 +110,14 @@ int CLuaBase::lua$CreateConVar()
 }
 
 // https://wiki.facepunch.com/gmod/Global.CurTime
-int CLuaBase::lua$CurTime()
+int CLuaBase::lua$CurTime(lua_State* lua_state)
 {
     lua_pushnumber(lua_state, uptime);
     return 1;
 }
 
 // https://wiki.facepunch.com/gmod/Global.ErrorNoHaltWithStack
-int CLuaBase::lua$ErrorNoHaltWithStack()
+int CLuaBase::lua$ErrorNoHaltWithStack(lua_State* lua_state)
 {
     int nargs = lua_gettop(lua_state);
 
@@ -137,7 +137,7 @@ int CLuaBase::lua$ErrorNoHaltWithStack()
 }
 
 // https://wiki.facepunch.com/gmod/Global.GetConVar
-int CLuaBase::lua$GetConVar()
+int CLuaBase::lua$GetConVar(lua_State* lua_state)
 {
     std::string name = luaL_checkstring(lua_state, 1);
 
@@ -156,7 +156,7 @@ int CLuaBase::lua$GetConVar()
 }
 
 // https://wiki.facepunch.com/gmod/Global.include
-int CLuaBase::lua$include()
+int CLuaBase::lua$include(lua_State* lua_state)
 {
     std::string path = (std::string) "garrysmod/lua/" + luaL_checkstring(lua_state, 1);
     int initial_top = lua_gettop(lua_state);
@@ -170,14 +170,14 @@ int CLuaBase::lua$include()
 }
 
 // https://wiki.facepunch.com/gmod/Global.istable
-int CLuaBase::lua$istable()
+int CLuaBase::lua$istable(lua_State* lua_state)
 {
     lua_pushboolean(lua_state, lua_type(lua_state, 1) == LUA_TTABLE);
     return 1;
 }
 
 // https://wiki.facepunch.com/gmod/Global.MsgC
-int CLuaBase::lua$MsgC()
+int CLuaBase::lua$MsgC(lua_State* lua_state)
 {
     int number_of_arguments = lua_gettop(lua_state);
 
@@ -212,7 +212,7 @@ int CLuaBase::lua$MsgC()
 }
 
 // https://wiki.facepunch.com/gmod/Global.PrintTable
-int CLuaBase::lua$PrintTable()
+int CLuaBase::lua$PrintTable(lua_State* lua_state)
 {
     // Note: `done` is ignored.
     luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
@@ -250,7 +250,7 @@ int CLuaBase::lua$PrintTable()
 }
 
 // https://wiki.facepunch.com/gmod/Global.require
-int CLuaBase::lua$require()
+int CLuaBase::lua$require(lua_State* lua_state)
 {
     char const* format = "garrysmod/lua/bin/gmsv_%s_" GMOD_MODULE_ARCH ".dll";
     std::string module_name = luaL_checkstring(lua_state, 1);
@@ -293,7 +293,7 @@ int CLuaBase::lua$require()
 }
 
 // https://wiki.facepunch.com/gmod/Global.type
-int CLuaBase::lua$type()
+int CLuaBase::lua$type(lua_State* lua_state)
 {
     // The builtin implementation of type() throws an error for this case.
     if (lua_gettop(lua_state) == 0) {

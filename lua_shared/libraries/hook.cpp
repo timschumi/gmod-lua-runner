@@ -2,7 +2,7 @@
 #include <lua.hpp>
 
 // https://wiki.facepunch.com/gmod/hook.Add
-int CLuaBase::lua$hook_Add()
+int CLuaBase::lua$hook_Add(lua_State* lua_state)
 {
     std::string event_name = luaL_checkstring(lua_state, 1);
     std::string identifier = luaL_checkstring(lua_state, 2);
@@ -25,7 +25,7 @@ int CLuaBase::lua$hook_Add()
 }
 
 // https://wiki.facepunch.com/gmod/hook.Call
-int CLuaBase::lua$hook_Call()
+int CLuaBase::lua$hook_Call(lua_State* lua_state)
 {
     std::string event_name = luaL_checkstring(lua_state, 1);
     // FIXME: Check on the gamemode table.
@@ -63,7 +63,7 @@ int CLuaBase::lua$hook_Call()
 }
 
 // https://wiki.facepunch.com/gmod/hook.GetTable
-int CLuaBase::lua$hook_GetTable()
+int CLuaBase::lua$hook_GetTable(lua_State* lua_state)
 {
     lua_createtable(lua_state, 0, 0);
 
@@ -82,7 +82,7 @@ int CLuaBase::lua$hook_GetTable()
 }
 
 // https://wiki.facepunch.com/gmod/hook.Remove
-int CLuaBase::lua$hook_Remove()
+int CLuaBase::lua$hook_Remove(lua_State* lua_state)
 {
     std::string event_name = luaL_checkstring(lua_state, 1);
     std::string identifier = luaL_checkstring(lua_state, 2);
@@ -99,7 +99,7 @@ int CLuaBase::lua$hook_Remove()
 }
 
 // https://wiki.facepunch.com/gmod/hook.Run
-int CLuaBase::lua$hook_Run()
+int CLuaBase::lua$hook_Run(lua_State* lua_state)
 {
     std::string event_name = luaL_checkstring(lua_state, 1);
     int number_of_arguments = lua_gettop(lua_state) - 1;

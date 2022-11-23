@@ -2,7 +2,7 @@
 #include <lua.hpp>
 
 // https://wiki.facepunch.com/gmod/string.EndsWith
-int CLuaBase::lua$string_EndsWith()
+int CLuaBase::lua$string_EndsWith(lua_State* lua_state)
 {
     std::string str = luaL_checkstring(lua_state, 1);
     std::string end = luaL_checkstring(lua_state, 2);
@@ -12,7 +12,7 @@ int CLuaBase::lua$string_EndsWith()
 }
 
 // https://wiki.facepunch.com/gmod/string.Explode
-int CLuaBase::lua$string_Explode()
+int CLuaBase::lua$string_Explode(lua_State* lua_state)
 {
     // FIXME: Support patterns.
     std::string separator = luaL_checkstring(lua_state, 1);
@@ -40,7 +40,7 @@ int CLuaBase::lua$string_Explode()
 }
 
 // https://wiki.facepunch.com/gmod/string.Right
-int CLuaBase::lua$string_Right()
+int CLuaBase::lua$string_Right(lua_State* lua_state)
 {
     std::string str = luaL_checkstring(lua_state, 1);
     size_t num = luaL_checknumber(lua_state, 2);
@@ -50,7 +50,7 @@ int CLuaBase::lua$string_Right()
 }
 
 // https://wiki.facepunch.com/gmod/string.Split
-int CLuaBase::lua$string_Split()
+int CLuaBase::lua$string_Split(lua_State* lua_state)
 {
     lua_pushcfunction(lua_state, lua$string_Explode$entry);
     lua_pushvalue(lua_state, 2);
@@ -61,7 +61,7 @@ int CLuaBase::lua$string_Split()
 }
 
 // https://wiki.facepunch.com/gmod/string.StartWith
-int CLuaBase::lua$string_StartWith()
+int CLuaBase::lua$string_StartWith(lua_State* lua_state)
 {
     std::string str = luaL_checkstring(lua_state, 1);
     std::string start = luaL_checkstring(lua_state, 2);

@@ -2,7 +2,7 @@
 #include <lua.hpp>
 
 // https://wiki.facepunch.com/gmod/table.Add
-int CLuaBase::lua$table_Add()
+int CLuaBase::lua$table_Add(lua_State* lua_state)
 {
     luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
     luaL_argcheck(lua_state, lua_istable(lua_state, 2), 2, "Expected table");
@@ -20,7 +20,7 @@ int CLuaBase::lua$table_Add()
 }
 
 // https://wiki.facepunch.com/gmod/table.Count
-int CLuaBase::lua$table_Count()
+int CLuaBase::lua$table_Count(lua_State* lua_state)
 {
     luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
 
@@ -37,7 +37,7 @@ int CLuaBase::lua$table_Count()
 }
 
 // https://wiki.facepunch.com/gmod/table.Inherit
-int CLuaBase::lua$table_Inherit()
+int CLuaBase::lua$table_Inherit(lua_State* lua_state)
 {
     luaL_argcheck(lua_state, lua_istable(lua_state, 1), 1, "Expected table");
     luaL_argcheck(lua_state, lua_istable(lua_state, 2), 2, "Expected table");

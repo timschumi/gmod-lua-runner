@@ -2,7 +2,7 @@
 #include <lua.hpp>
 
 // https://wiki.facepunch.com/gmod/concommand.Add
-int CLuaBase::lua$concommand_Add()
+int CLuaBase::lua$concommand_Add(lua_State* lua_state)
 {
     char const* name = luaL_checkstring(lua_state, 1);
     luaL_argcheck(lua_state, lua_isfunction(lua_state, 2), 2, "Expected function");

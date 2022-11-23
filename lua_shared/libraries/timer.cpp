@@ -2,7 +2,7 @@
 #include <lua.hpp>
 
 // https://wiki.facepunch.com/gmod/timer.Create
-int CLuaBase::lua$timer_Create()
+int CLuaBase::lua$timer_Create(lua_State* lua_state)
 {
     std::string identifier = luaL_checkstring(lua_state, 1);
     lua_Number delay = luaL_checknumber(lua_state, 2);
@@ -20,7 +20,7 @@ int CLuaBase::lua$timer_Create()
 }
 
 // https://wiki.facepunch.com/gmod/timer.Remove
-int CLuaBase::lua$timer_Remove()
+int CLuaBase::lua$timer_Remove(lua_State* lua_state)
 {
     std::string identifier = luaL_checkstring(lua_state, 1);
 

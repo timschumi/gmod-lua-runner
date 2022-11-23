@@ -37,7 +37,7 @@ static std::ios_base::openmode mode_to_ios_flags(std::string const& mode)
 }
 
 // https://wiki.facepunch.com/gmod/File:Close
-int CLuaBase::lua$meta$File_Close()
+int CLuaBase::lua$meta$File_Close(lua_State* lua_state)
 {
     auto** file = static_cast<FileHandle**>(luaL_checkudata(lua_state, 1, "File"));
     (*file)->stream.close();
@@ -45,7 +45,7 @@ int CLuaBase::lua$meta$File_Close()
 }
 
 // https://wiki.facepunch.com/gmod/File:Size
-int CLuaBase::lua$meta$File_Size()
+int CLuaBase::lua$meta$File_Size(lua_State* lua_state)
 {
     auto** file = static_cast<FileHandle**>(luaL_checkudata(lua_state, 1, "File"));
     lua_pushnumber(lua_state, std::filesystem::file_size((*file)->name));
@@ -53,7 +53,7 @@ int CLuaBase::lua$meta$File_Size()
 }
 
 // https://wiki.facepunch.com/gmod/File:Read
-int CLuaBase::lua$meta$File_Read()
+int CLuaBase::lua$meta$File_Read(lua_State* lua_state)
 {
     auto** file = static_cast<FileHandle**>(luaL_checkudata(lua_state, 1, "File"));
     std::string result;
@@ -73,7 +73,7 @@ int CLuaBase::lua$meta$File_Read()
 }
 
 // https://wiki.facepunch.com/gmod/file.Find
-int CLuaBase::lua$file_Find()
+int CLuaBase::lua$file_Find(lua_State* lua_state)
 {
     std::string name = luaL_checkstring(lua_state, 1);
     std::string path = luaL_checkstring(lua_state, 2);
@@ -123,7 +123,7 @@ int CLuaBase::lua$file_Find()
 }
 
 // https://wiki.facepunch.com/gmod/file.Open
-int CLuaBase::lua$file_Open()
+int CLuaBase::lua$file_Open(lua_State* lua_state)
 {
     // FIXME: Sanitize path against directory traversal.
     std::string file_name = luaL_checkstring(lua_state, 1);
