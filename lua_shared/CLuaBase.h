@@ -22,9 +22,6 @@
     MODULE_START("concommand")                                      \
     FUNCTION("Add", concommand_Add)                                 \
     MODULE_END()                                                    \
-    MODULE_START("coroutine")                                       \
-    FUNCTION("create", coroutine_create)                            \
-    MODULE_END()                                                    \
     MODULE_START("file")                                            \
     FUNCTION("Find", file_Find)                                     \
     FUNCTION("Open", file_Open)                                     \
@@ -120,8 +117,6 @@ private:
     void unload_modules();
 
     std::map<std::string, std::map<std::string, int>> registered_hooks;
-
-    std::list<lua_State*> coroutines;
 
     struct Timer {
         double delay;

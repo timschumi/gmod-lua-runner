@@ -135,7 +135,7 @@ bool CLuaBase::is_active()
             return result.value();
     }
 
-    for (auto coroutine : coroutines) {
+    for (lua_State* coroutine = luaR_next_thread(main_lua_state); coroutine; coroutine = luaR_next_thread(coroutine)) {
         int coroutine_status = lua_status(coroutine);
 
         if (coroutine_status == LUA_YIELD)

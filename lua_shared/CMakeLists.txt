@@ -3,7 +3,6 @@ set(SOURCES
     CLuaBase.cpp
     libraries/base.cpp
     libraries/concommand.cpp
-    libraries/coroutine.cpp
     libraries/file.cpp
     libraries/hook.cpp
     libraries/string.cpp
