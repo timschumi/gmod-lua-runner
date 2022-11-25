@@ -8,8 +8,10 @@
 
 CLuaBase::CLuaBase()
 {
-    lua_state = luaL_newstate();
-    lua_state->luabase = this;
+    main_lua_state = luaL_newstate();
+    main_lua_state->luabase = this;
+
+    auto lua_state = main_lua_state;
 
     luaopen_base(lua_state);
     luaopen_debug(lua_state);
@@ -84,12 +86,12 @@ CLuaBase::~CLuaBase()
 {
     unload_modules();
 
-    lua_close(lua_state);
+    lua_close(main_lua_state);
 }
 
 int CLuaBase::load_file(char const* path)
 {
-    return luaL_loadfile(lua_state, path);
+    return luaL_loadfile(luaR_current_thread(main_lua_state), path);
 }
 
 int CLuaBase::print_error_with_stack_trace(lua_State* lua_state)
@@ -153,6 +155,11 @@ bool CLuaBase::is_active()
 
 void CLuaBase::run_event_loop()
 {
+    auto lua_state = luaR_current_thread(main_lua_state);
+
+    // Nobody should ever run this from a non-main thread.
+    assert(lua_state == main_lua_state);
+
     while (is_active()) {
         // hook.Run("Think")
         lua_pushcfunction(lua_state, CLuaBase::lua$hook_Run$entry);
@@ -213,124 +220,124 @@ int CLuaBase::lua$tostring$entry(lua_State* lua_state)
 
 int CLuaBase::Top()
 {
-    return lua_gettop(lua_state);
+    return lua_gettop(luaR_current_thread(main_lua_state));
 }
 
 void CLuaBase::Push(int iStackPos)
 {
-    lua_pushvalue(lua_state, iStackPos);
+    lua_pushvalue(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 void CLuaBase::Pop(int iAmt)
 {
-    lua_pop(lua_state, iAmt);
+    lua_pop(luaR_current_thread(main_lua_state), iAmt);
 }
 
 void CLuaBase::GetTable(int iStackPos)
 {
-    lua_gettable(lua_state, iStackPos);
+    lua_gettable(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 void CLuaBase::GetField(int iStackPos, char const* strName)
 {
-    lua_getfield(lua_state, iStackPos, strName);
+    lua_getfield(luaR_current_thread(main_lua_state), iStackPos, strName);
 }
 
 void CLuaBase::SetField(int iStackPos, char const* strName)
 {
-    lua_setfield(lua_state, iStackPos, strName);
+    lua_setfield(luaR_current_thread(main_lua_state), iStackPos, strName);
 }
 
 void CLuaBase::CreateTable()
 {
-    lua_newtable(lua_state);
+    lua_newtable(luaR_current_thread(main_lua_state));
 }
 
 void CLuaBase::SetTable(int iStackPos)
 {
-    lua_settable(lua_state, iStackPos);
+    lua_settable(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 void CLuaBase::SetMetaTable(int iStackPos)
 {
-    lua_setmetatable(lua_state, iStackPos);
+    lua_setmetatable(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 bool CLuaBase::GetMetaTable(int i)
 {
-    return lua_getmetatable(lua_state, i);
+    return lua_getmetatable(luaR_current_thread(main_lua_state), i);
 }
 
 void CLuaBase::Call(int iArgs, int iResults)
 {
-    lua_call(lua_state, iArgs, iResults);
+    lua_call(luaR_current_thread(main_lua_state), iArgs, iResults);
 }
 
 int CLuaBase::PCall(int iArgs, int iResults, int iErrorFunc)
 {
-    return lua_pcall(lua_state, iArgs, iResults, iErrorFunc);
+    return lua_pcall(luaR_current_thread(main_lua_state), iArgs, iResults, iErrorFunc);
 }
 
 int CLuaBase::Equal(int iA, int iB)
 {
-    return lua_equal(lua_state, iA, iB);
+    return lua_equal(luaR_current_thread(main_lua_state), iA, iB);
 }
 
 int CLuaBase::RawEqual(int iA, int iB)
 {
-    return lua_rawequal(lua_state, iA, iB);
+    return lua_rawequal(luaR_current_thread(main_lua_state), iA, iB);
 }
 
 void CLuaBase::Insert(int iStackPos)
 {
-    lua_insert(lua_state, iStackPos);
+    lua_insert(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 void CLuaBase::Remove(int iStackPos)
 {
-    lua_remove(lua_state, iStackPos);
+    lua_remove(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 int CLuaBase::Next(int iStackPos)
 {
-    return lua_next(lua_state, iStackPos);
+    return lua_next(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 void* CLuaBase::NewUserdata(unsigned int iSize)
 {
-    return lua_newuserdata(lua_state, iSize);
+    return lua_newuserdata(luaR_current_thread(main_lua_state), iSize);
 }
 
 void CLuaBase::ThrowError(char const* strError)
 {
-    lua_pushstring(lua_state, strError);
-    lua_error(lua_state);
+    lua_pushstring(luaR_current_thread(main_lua_state), strError);
+    lua_error(luaR_current_thread(main_lua_state));
 }
 
 void CLuaBase::CheckType(int iStackPos, int iType)
 {
-    luaL_checktype(lua_state, iStackPos, iType);
+    luaL_checktype(luaR_current_thread(main_lua_state), iStackPos, iType);
 }
 
 void CLuaBase::ArgError(int iArgNum, char const* strMessage)
 {
-    luaL_argerror(lua_state, iArgNum, strMessage);
+    luaL_argerror(luaR_current_thread(main_lua_state), iArgNum, strMessage);
 }
 
 void CLuaBase::RawGet(int iStackPos)
 {
-    lua_rawget(lua_state, iStackPos);
+    lua_rawget(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 void CLuaBase::RawSet(int iStackPos)
 {
-    lua_rawset(lua_state, iStackPos);
+    lua_rawset(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 char const* CLuaBase::GetString(int iStackPos, unsigned int* iOutLen)
 {
     size_t output_length = 0;
-    char const* string = lua_tolstring(lua_state, iStackPos, &output_length);
+    char const* string = lua_tolstring(luaR_current_thread(main_lua_state), iStackPos, &output_length);
 
     if (iOutLen) {
         assert(output_length <= UINT_MAX);
@@ -342,27 +349,27 @@ char const* CLuaBase::GetString(int iStackPos, unsigned int* iOutLen)
 
 double CLuaBase::GetNumber(int iStackPos)
 {
-    return lua_tonumber(lua_state, iStackPos);
+    return lua_tonumber(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 bool CLuaBase::GetBool(int iStackPos)
 {
-    return lua_toboolean(lua_state, iStackPos);
+    return lua_toboolean(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 GarrysMod::Lua::CFunc CLuaBase::GetCFunction(int iStackPos)
 {
-    return lua_tocfunction(lua_state, iStackPos);
+    return lua_tocfunction(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 void* CLuaBase::GetUserdata(int iStackPos)
 {
-    return lua_touserdata(lua_state, iStackPos);
+    return lua_touserdata(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 void CLuaBase::PushNil()
 {
-    lua_pushnil(lua_state);
+    lua_pushnil(luaR_current_thread(main_lua_state));
 }
 
 void CLuaBase::PushString(char const* val, unsigned int iLen)
@@ -370,62 +377,62 @@ void CLuaBase::PushString(char const* val, unsigned int iLen)
     if (!iLen)
         iLen = strlen(val);
 
-    lua_pushlstring(lua_state, val, iLen);
+    lua_pushlstring(luaR_current_thread(main_lua_state), val, iLen);
 }
 
 void CLuaBase::PushNumber(double val)
 {
-    lua_pushnumber(lua_state, val);
+    lua_pushnumber(luaR_current_thread(main_lua_state), val);
 }
 
 void CLuaBase::PushBool(bool val)
 {
-    lua_pushboolean(lua_state, val);
+    lua_pushboolean(luaR_current_thread(main_lua_state), val);
 }
 
 void CLuaBase::PushCFunction(GarrysMod::Lua::CFunc val)
 {
-    lua_pushcfunction(lua_state, val);
+    lua_pushcfunction(luaR_current_thread(main_lua_state), val);
 }
 
 void CLuaBase::PushCClosure(GarrysMod::Lua::CFunc val, int iVars)
 {
-    lua_pushcclosure(lua_state, val, iVars);
+    lua_pushcclosure(luaR_current_thread(main_lua_state), val, iVars);
 }
 
 void CLuaBase::PushUserdata(void* pVoid)
 {
-    lua_pushlightuserdata(lua_state, pVoid);
+    lua_pushlightuserdata(luaR_current_thread(main_lua_state), pVoid);
 }
 
 int CLuaBase::ReferenceCreate()
 {
-    return luaL_ref(lua_state, LUA_REGISTRYINDEX);
+    return luaL_ref(luaR_current_thread(main_lua_state), LUA_REGISTRYINDEX);
 }
 
 void CLuaBase::ReferenceFree(int i)
 {
-    luaL_unref(lua_state, LUA_REGISTRYINDEX, i);
+    luaL_unref(luaR_current_thread(main_lua_state), LUA_REGISTRYINDEX, i);
 }
 
 void CLuaBase::ReferencePush(int i)
 {
-    lua_rawgeti(lua_state, LUA_REGISTRYINDEX, i);
+    lua_rawgeti(luaR_current_thread(main_lua_state), LUA_REGISTRYINDEX, i);
 }
 
 void CLuaBase::PushSpecial(int iType)
 {
     switch (iType) {
     case GarrysMod::Lua::SPECIAL_GLOB:
-        lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
+        lua_pushvalue(luaR_current_thread(main_lua_state), LUA_GLOBALSINDEX);
         return;
 
     case GarrysMod::Lua::SPECIAL_ENV:
-        lua_pushvalue(lua_state, LUA_ENVIRONINDEX);
+        lua_pushvalue(luaR_current_thread(main_lua_state), LUA_ENVIRONINDEX);
         return;
 
     case GarrysMod::Lua::SPECIAL_REG:
-        lua_pushvalue(lua_state, LUA_REGISTRYINDEX);
+        lua_pushvalue(luaR_current_thread(main_lua_state), LUA_REGISTRYINDEX);
         return;
 
     default:
@@ -435,17 +442,17 @@ void CLuaBase::PushSpecial(int iType)
 
 bool CLuaBase::IsType(int iStackPos, int iType)
 {
-    return lua_type(lua_state, iStackPos) == iType;
+    return lua_type(luaR_current_thread(main_lua_state), iStackPos) == iType;
 }
 
 int CLuaBase::GetType(int iStackPos)
 {
-    return lua_type(lua_state, iStackPos);
+    return lua_type(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 char const* CLuaBase::GetTypeName(int iType)
 {
-    return lua_typename(lua_state, iType);
+    return lua_typename(luaR_current_thread(main_lua_state), iType);
 }
 
 void CLuaBase::CreateMetaTableType(char const* strName, int iType)
@@ -456,17 +463,17 @@ void CLuaBase::CreateMetaTableType(char const* strName, int iType)
 
 char const* CLuaBase::CheckString(int iStackPos)
 {
-    return luaL_checkstring(lua_state, iStackPos);
+    return luaL_checkstring(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 double CLuaBase::CheckNumber(int iStackPos)
 {
-    return luaL_checknumber(lua_state, iStackPos);
+    return luaL_checknumber(luaR_current_thread(main_lua_state), iStackPos);
 }
 
 int CLuaBase::ObjLen(int iStackPos)
 {
-    size_t length = lua_objlen(lua_state, iStackPos);
+    size_t length = lua_objlen(luaR_current_thread(main_lua_state), iStackPos);
     assert(length <= INT_MAX && length >= INT_MIN);
     return static_cast<int>(length);
 }
@@ -497,7 +504,10 @@ void CLuaBase::PushVector(Vector const& val)
 
 void CLuaBase::SetState(lua_State* L)
 {
-    lua_state = L;
+    // We don't do anything here because we don't track the active thread manually.
+    // However, we should make sure that no user ever tries to manually "switch" the active thread
+    // using this.
+    assert(L == luaR_current_thread(main_lua_state));
 }
 
 int CLuaBase::CreateMetaTable(char const* strName)

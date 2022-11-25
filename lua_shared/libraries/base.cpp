@@ -311,6 +311,11 @@ int CLuaBase::lua$type(lua_State* lua_state)
 
 void CLuaBase::unload_modules()
 {
+    auto lua_state = luaR_current_thread(main_lua_state);
+
+    // Nobody should ever run this from a non-main thread.
+    assert(lua_state == main_lua_state);
+
     for (auto const& handle : loaded_module_handles) {
 #if defined(__linux__)
         auto library_fini_function = reinterpret_cast<lua_CFunction>(dlsym(handle.second, "gmod13_close"));

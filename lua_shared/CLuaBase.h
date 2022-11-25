@@ -24,7 +24,6 @@
     MODULE_END()                                                    \
     MODULE_START("coroutine")                                       \
     FUNCTION("create", coroutine_create)                            \
-    FUNCTION("resume", coroutine_resume)                            \
     MODULE_END()                                                    \
     MODULE_START("file")                                            \
     FUNCTION("Find", file_Find)                                     \
@@ -113,7 +112,7 @@ public:
     void run_event_loop();
 
 private:
-    lua_State* lua_state { nullptr };
+    lua_State* main_lua_state { nullptr };
 
     double uptime { 0 };
 
