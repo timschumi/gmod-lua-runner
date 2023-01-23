@@ -43,9 +43,18 @@ int CLuaBase::lua$string_Explode(lua_State* lua_state)
 int CLuaBase::lua$string_Right(lua_State* lua_state)
 {
     std::string str = luaL_checkstring(lua_state, 1);
-    size_t num = luaL_checknumber(lua_state, 2);
+    size_t str_length = str.length();
+    double num = luaL_checknumber(lua_state, 2);
 
-    lua_pushstring(lua_state, str.substr(str.length() - num).c_str());
+    if (num < 1)
+        num = str_length + num + 1;
+
+    if (num < 0)
+        num = 0;
+    else if (num > str_length)
+        num = str_length;
+
+    lua_pushstring(lua_state, str.substr(str_length - num).c_str());
     return 1;
 }
 
