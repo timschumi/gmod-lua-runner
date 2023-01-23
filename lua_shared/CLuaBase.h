@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GarrysMod/Lua/Interface.h>
+#include <chrono>
 #include <functional>
 #include <list>
 #include <map>
@@ -18,6 +19,7 @@
     FUNCTION("MsgC", MsgC)                                          \
     FUNCTION("PrintTable", PrintTable)                              \
     FUNCTION("require", require)                                    \
+    FUNCTION("SysTime", SysTime)                                    \
     FUNCTION("type", type)                                          \
     MODULE_START("concommand")                                      \
     FUNCTION("Add", concommand_Add)                                 \
@@ -112,6 +114,7 @@ private:
     lua_State* main_lua_state { nullptr };
 
     double uptime { 0 };
+    std::chrono::time_point<std::chrono::system_clock> boot_system_clock;
 
     std::map<std::string, void*> loaded_module_handles;
     void unload_modules();

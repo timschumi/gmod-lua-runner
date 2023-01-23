@@ -292,6 +292,14 @@ int CLuaBase::lua$require(lua_State* lua_state)
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/Global.SysTime
+int CLuaBase::lua$SysTime(lua_State* lua_state)
+{
+    std::chrono::duration<double> since_boot = std::chrono::system_clock::now() - boot_system_clock;
+    lua_pushnumber(lua_state, since_boot.count());
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.type
 int CLuaBase::lua$type(lua_State* lua_state)
 {

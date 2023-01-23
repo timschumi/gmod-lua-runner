@@ -8,6 +8,8 @@
 
 CLuaBase::CLuaBase()
 {
+    boot_system_clock = std::chrono::system_clock::now();
+
     main_lua_state = luaL_newstate();
     main_lua_state->luabase = this;
 
