@@ -44,6 +44,7 @@
     MODULE_END()                                                    \
     MODULE_START("table")                                           \
     FUNCTION("Add", table_Add)                                      \
+    FUNCTION("Copy", table_Copy)                                    \
     FUNCTION("Count", table_Count)                                  \
     FUNCTION("Inherit", table_Inherit)                              \
     MODULE_END()                                                    \
