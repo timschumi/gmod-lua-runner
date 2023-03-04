@@ -46,13 +46,15 @@ jobs:
 
     - name: Build binaries
       run: |
-        cmake -B build -DCMAKE_TOOLCHAIN_FILE=toolchain-${{ matrix.target }}.cmake
+        export LUA_RUNNER_VERSION=$(git describe --tags | sed 's/^v//')
+        echo "LUA_RUNNER_VERSION=${LUA_RUNNER_VERSION}" >> $GITHUB_ENV
+        cmake -B build -DLUA_RUNNER_VERSION=${LUA_RUNNER_VERSION} -DCMAKE_TOOLCHAIN_FILE=toolchain-${{ matrix.target }}.cmake
         cmake --build build --target package
 
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
-        name: binaries
+        name: gmod-lua-runner-${{ env.LUA_RUNNER_VERSION }}-binaries
         path: build/gmod-lua-runner-*.tar.gz
 
   release:
