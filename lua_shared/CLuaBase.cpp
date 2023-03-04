@@ -91,6 +91,11 @@ CLuaBase::~CLuaBase()
     lua_close(main_lua_state);
 }
 
+void CLuaBase::set_base_directory(std::filesystem::path const& directory)
+{
+    this->base_directory = directory;
+}
+
 int CLuaBase::load_file(char const* path)
 {
     return luaL_loadfile(luaR_current_thread(main_lua_state), path);

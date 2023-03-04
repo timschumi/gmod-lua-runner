@@ -14,8 +14,8 @@ int main(int argc, char const** argv)
     if (!base_directory.is_absolute())
         base_directory = std::filesystem::absolute(base_directory);
 
-    if (chdir(base_directory.string().c_str()) < 0) {
-        fprintf(stderr, "Failed to change directory to '%s': %s\n", base_directory.string().c_str(), strerror(errno));
+    if (chdir(binary_directory.string().c_str()) < 0) {
+        fprintf(stderr, "Failed to change directory to '%s': %s\n", binary_directory.string().c_str(), strerror(errno));
         return 1;
     }
 
@@ -30,6 +30,7 @@ int main(int argc, char const** argv)
         script_path = original_directory / script_path;
 
     CLuaBase lua_base;
+    lua_base.set_base_directory(base_directory);
 
     lua_base.PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
     lua_base.CreateTable();
@@ -43,9 +44,9 @@ int main(int argc, char const** argv)
     lua_base.SetField(-2, "runner");
     lua_base.Pop(1);
 
-    if (std::filesystem::exists("garrysmod/lua/autorun")) {
+    if (std::filesystem::exists(base_directory / "garrysmod" / "lua" / "autorun")) {
         lua_base.PushCFunction(CLuaBase::print_error_with_stack_trace);
-        for (auto const& entry : std::filesystem::directory_iterator("garrysmod/lua/autorun")) {
+        for (auto const& entry : std::filesystem::directory_iterator(base_directory / "garrysmod" / "lua" / "autorun")) {
             if (lua_base.load_file(entry.path().string().c_str()) != 0) {
                 fprintf(stderr, "%s\n", lua_base.CheckString(-1));
                 return 1;

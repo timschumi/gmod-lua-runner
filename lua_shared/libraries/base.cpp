@@ -158,7 +158,7 @@ int CLuaBase::lua$GetConVar(lua_State* lua_state)
 // https://wiki.facepunch.com/gmod/Global.include
 int CLuaBase::lua$include(lua_State* lua_state)
 {
-    std::string path = (std::string) "garrysmod/lua/" + luaL_checkstring(lua_state, 1);
+    std::string path = this->base_directory.string() + "/garrysmod/lua/" + luaL_checkstring(lua_state, 1);
     int initial_top = lua_gettop(lua_state);
 
     if (luaL_loadfile(lua_state, path.c_str()) != LUA_OK)
@@ -252,15 +252,15 @@ int CLuaBase::lua$PrintTable(lua_State* lua_state)
 // https://wiki.facepunch.com/gmod/Global.require
 int CLuaBase::lua$require(lua_State* lua_state)
 {
-    char const* format = "garrysmod/lua/bin/gmsv_%s_" GMOD_MODULE_ARCH ".dll";
+    char const* format = "%s/garrysmod/lua/bin/gmsv_%s_" GMOD_MODULE_ARCH ".dll";
     std::string module_name = luaL_checkstring(lua_state, 1);
 
     if (loaded_module_handles.contains(module_name))
         return 0;
 
-    size_t formatted_name_length = snprintf(nullptr, 0, format, module_name.c_str());
+    size_t formatted_name_length = snprintf(nullptr, 0, format, this->base_directory.string().c_str(), module_name.c_str());
     char full_name[formatted_name_length + 1];
-    snprintf(full_name, sizeof(full_name), format, module_name.c_str());
+    snprintf(full_name, sizeof(full_name), format, this->base_directory.string().c_str(), module_name.c_str());
 
 #if defined(__linux__)
     void* library_handle = dlopen(full_name, RTLD_LAZY);

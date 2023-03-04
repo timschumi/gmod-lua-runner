@@ -89,7 +89,7 @@ int CLuaBase::lua$file_Find(lua_State* lua_state)
     lua_createtable(lua_state, 0, 0);
 
     for (auto const& directory_path : paths_to_search.value()) {
-        auto full_name = directory_path;
+        auto full_name = this->base_directory.string() + "/" + directory_path;
         full_name.append("/");
         full_name.append(name);
 
@@ -136,7 +136,7 @@ int CLuaBase::lua$file_Open(lua_State* lua_state)
         return luaL_error(lua_state, "Unknown or unimplemented path for finding files: '%s'", game_path.c_str());
 
     for (auto const& directory_path : paths_to_search.value()) {
-        std::string full_path = directory_path + "/" + file_name;
+        std::string full_path = this->base_directory.string() + "/" + directory_path + "/" + file_name;
 
         std::fstream file(full_path.c_str(), mode_to_ios_flags(file_mode));
 

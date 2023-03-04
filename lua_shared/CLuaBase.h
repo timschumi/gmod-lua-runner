@@ -2,6 +2,7 @@
 
 #include <GarrysMod/Lua/Interface.h>
 #include <chrono>
+#include <filesystem>
 #include <functional>
 #include <list>
 #include <map>
@@ -102,6 +103,8 @@ public:
     CLuaBase();
     ~CLuaBase();
 
+    void set_base_directory(std::filesystem::path const&);
+
     int load_file(char const* path);
     static int print_error_with_stack_trace(lua_State* state);
     static int print_stack_trace(lua_State* state);
@@ -113,6 +116,8 @@ public:
 
 private:
     lua_State* main_lua_state { nullptr };
+
+    std::filesystem::path base_directory;
 
     double uptime { 0 };
     std::chrono::time_point<std::chrono::system_clock> boot_system_clock;
