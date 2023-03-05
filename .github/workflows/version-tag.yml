@@ -54,8 +54,9 @@ jobs:
     - name: Upload binaries
       uses: actions/upload-artifact@v3
       with:
-        name: gmod-lua-runner-${{ env.LUA_RUNNER_VERSION }}-binaries
+        name: binaries
         path: build/gmod-lua-runner-*.tar.gz
+        retention-days: 1
 
   release:
     runs-on: ubuntu-22.04
