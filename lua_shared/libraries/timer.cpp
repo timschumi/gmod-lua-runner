@@ -19,6 +19,14 @@ int CLuaBase::lua$timer_Create(lua_State* lua_state)
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/timer.Exists
+int CLuaBase::lua$timer_Exists(lua_State* lua_state)
+{
+    std::string identifier = luaL_checkstring(lua_state, 1);
+    lua_pushboolean(lua_state, timers.contains(identifier));
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/timer.Remove
 int CLuaBase::lua$timer_Remove(lua_State* lua_state)
 {

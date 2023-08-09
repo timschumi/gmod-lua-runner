@@ -51,6 +51,7 @@
     MODULE_END()                                                    \
     MODULE_START("timer")                                           \
     FUNCTION("Create", timer_Create)                                \
+    FUNCTION("Exists", timer_Exists)                                \
     FUNCTION("Remove", timer_Remove)                                \
     MODULE_END()
 
