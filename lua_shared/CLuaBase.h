@@ -16,6 +16,7 @@
     FUNCTION("ErrorNoHaltWithStack", ErrorNoHaltWithStack)          \
     FUNCTION("GetConVar", GetConVar)                                \
     FUNCTION("include", include)                                    \
+    FUNCTION("isfunction", isfunction)                              \
     FUNCTION("istable", istable)                                    \
     FUNCTION("MsgC", MsgC)                                          \
     FUNCTION("PrintTable", PrintTable)                              \
