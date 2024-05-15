@@ -1,6 +1,13 @@
 runner.return_value = 1
 found_failed_test = false
 SERVER = true
+GAMEMODE = {
+    Folder = "gamemodes/sandbox",
+    FolderName = "sandbox",
+    IsSandboxDerived = true,
+    Name = "Sandbox",
+    TeamBased = false,
+}
 GetConVar("gluatest_enable"):SetBool(true)
 
 hook.Add("GLuaTest_LoggedTestFailure", "record_test_failures", function(errInfo)
