@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <fstream>
 #include <lua.hpp>
+#include <map>
+#include <ranges>
 
 struct FileHandle {
     std::string name;
@@ -77,8 +79,11 @@ int CLuaBase::lua$file_Find(lua_State* lua_state)
 {
     std::string name = luaL_checkstring(lua_state, 1);
     std::string path = luaL_checkstring(lua_state, 2);
-    // FIXME: Sorting is currently ignored.
     std::string sorting = lua_gettop(lua_state) >= 3 ? luaL_checkstring(lua_state, 3) : "nameasc";
+
+    // FIXME: Only nameasc sorting is implemented at the moment.
+    if (sorting != "nameasc")
+        return luaL_error(lua_state, "Unknown or unimplemented sorting scheme: '%s'", sorting.c_str());
 
     auto paths_to_search = file_search_path_to_list(path);
 
@@ -100,7 +105,13 @@ int CLuaBase::lua$file_Find(lua_State* lua_state)
         if (!std::filesystem::exists(full_name))
             continue;
 
-        for (auto const& dir_entry : std::filesystem::directory_iterator { full_name }) {
+        // Rely on set order to sort paths in nameasc order, the choice of sorting order has been asserted above.
+        // The paths should be unique, so using a set is fine.
+        std::map<std::filesystem::path, std::filesystem::directory_entry> sorted_paths;
+        for (auto const &entry : std::filesystem::directory_iterator { full_name })
+            sorted_paths[entry.path()] = entry;
+
+        for (auto const& dir_entry : sorted_paths | std::views::values) {
             // Remove search prefix from the file path.
             auto file_path = dir_entry.path().generic_string();
             assert(file_path.starts_with(full_name + "/"));
