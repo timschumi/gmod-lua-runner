@@ -39,7 +39,7 @@ jobs:
         sudo dpkg -i mingw-w64{,-common,-i686-dev,-x86-64-dev}_10.0.0-3_all.deb
 
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         submodules: true
@@ -52,7 +52,7 @@ jobs:
         cmake --build build --target package
 
     - name: Upload binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: binaries
         path: build/gmod-lua-runner-*.tar.gz
@@ -64,12 +64,12 @@ jobs:
 
     steps:
     - name: Download built binaries
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v5
       with:
         name: binaries
 
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         draft: true
         fail_on_unmatched_files: true

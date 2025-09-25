@@ -40,7 +40,7 @@ jobs:
         sudo dpkg -i mingw-w64{,-common,-i686-dev,-x86-64-dev}_10.0.0-3_all.deb
 
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         submodules: true
@@ -53,7 +53,7 @@ jobs:
         cmake --build build --target package
 
     - name: Upload binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: gmod-lua-runner-${{ env.LUA_RUNNER_VERSION }}-binaries
         path: build/gmod-lua-runner-*.tar.gz
@@ -63,7 +63,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Install clang-format
         run: |
@@ -83,7 +83,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         submodules: true
@@ -97,7 +97,7 @@ jobs:
         cmake --build build
 
     - name: Check out GLuaTest
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
       with:
         repository: 'CFC-Servers/GLuaTest'
         path: 'GLuaTest'
