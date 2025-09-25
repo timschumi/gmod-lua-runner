@@ -108,7 +108,7 @@ int CLuaBase::lua$file_Find(lua_State* lua_state)
         // Rely on set order to sort paths in nameasc order, the choice of sorting order has been asserted above.
         // The paths should be unique, so using a set is fine.
         std::map<std::filesystem::path, std::filesystem::directory_entry> sorted_paths;
-        for (auto const &entry : std::filesystem::directory_iterator { full_name })
+        for (auto const& entry : std::filesystem::directory_iterator { full_name })
             sorted_paths[entry.path()] = entry;
 
         for (auto const& dir_entry : sorted_paths | std::views::values) {
