@@ -53,7 +53,7 @@ jobs:
     - name: Upload binaries
       uses: actions/upload-artifact@v4
       with:
-        name: gmod-lua-runner-${{ env.LUA_RUNNER_VERSION }}-binaries
+        name: gmod-lua-runner-${{ env.LUA_RUNNER_VERSION }}-${{ matrix.target }}-binaries
         path: build/gmod-lua-runner-*.tar.gz
 
   format:
