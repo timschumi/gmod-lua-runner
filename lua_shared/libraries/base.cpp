@@ -219,6 +219,13 @@ int CLuaBase::lua$isfunction(lua_State* lua_state)
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.isstring
+int CLuaBase::lua$isstring(lua_State* lua_state)
+{
+    lua_pushboolean(lua_state, lua_type(lua_state, 1) == LUA_TSTRING);
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.istable
 int CLuaBase::lua$istable(lua_State* lua_state)
 {

@@ -18,6 +18,7 @@
     FUNCTION("GetConVar", GetConVar)                                \
     FUNCTION("include", include)                                    \
     FUNCTION("isfunction", isfunction)                              \
+    FUNCTION("isstring", isstring)                                  \
     FUNCTION("istable", istable)                                    \
     FUNCTION("MsgC", MsgC)                                          \
     FUNCTION("PrintTable", PrintTable)                              \
