@@ -21,6 +21,7 @@
     FUNCTION("istable", istable)                                    \
     FUNCTION("MsgC", MsgC)                                          \
     FUNCTION("PrintTable", PrintTable)                              \
+    FUNCTION("ProtectedCall", ProtectedCall)                        \
     FUNCTION("require", require)                                    \
     FUNCTION("SysTime", SysTime)                                    \
     FUNCTION("type", type)                                          \

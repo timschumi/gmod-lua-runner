@@ -296,6 +296,20 @@ int CLuaBase::lua$PrintTable(lua_State* lua_state)
     return 0;
 }
 
+// https://wiki.facepunch.com/gmod/Global.ProtectedCall
+int CLuaBase::lua$ProtectedCall(lua_State* lua_state)
+{
+    // FIXME: This should still print and handle the error in the error case.
+
+    // One function and all arguments, they can stay as-is.
+    int number_of_arguments = lua_gettop(lua_state);
+    luaL_argcheck(lua_state, lua_isfunction(lua_state, 1), 1, "Expected function");
+
+    int call_result = lua_pcall(lua_state, number_of_arguments - 1, 0, 0);
+    lua_pushboolean(lua_state, call_result == LUA_OK);
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/Global.require
 int CLuaBase::lua$require(lua_State* lua_state)
 {
