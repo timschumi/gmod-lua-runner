@@ -1,5 +1,6 @@
 #include "CLuaBase.h"
 #include <cassert>
+#include <filesystem>
 #include <lua.hpp>
 
 #ifdef __linux__
@@ -158,10 +159,29 @@ int CLuaBase::lua$GetConVar(lua_State* lua_state)
 // https://wiki.facepunch.com/gmod/Global.include
 int CLuaBase::lua$include(lua_State* lua_state)
 {
-    std::string path = this->base_directory.string() + "/garrysmod/lua/" + luaL_checkstring(lua_state, 1);
+    std::string path = luaL_checkstring(lua_state, 1);
     int initial_top = lua_gettop(lua_state);
 
-    if (luaL_loadfile(lua_state, path.c_str()) != LUA_OK)
+    std::filesystem::path built_path;
+
+    // TODO: Check behavior on include calls from [C].
+    lua_Debug ar {};
+    if (lua_getstack(lua_state, 1, &ar) == 0)
+        goto include_skip_current;
+    if (lua_getinfo(lua_state, "S", &ar) == 0)
+        goto include_skip_current;
+    if (ar.source[0] != '@')
+        goto include_skip_current;
+
+    // TODO: Check preference between relative-to-current and relative-to-root. For now we prefer relative-to-current.
+    built_path = std::filesystem::path { ar.source + 1 }.parent_path() / path;
+    if (std::filesystem::exists(built_path))
+        goto include_load;
+include_skip_current:
+    built_path = this->base_directory / "garrysmod/lua" / path;
+
+include_load:
+    if (luaL_loadfile(lua_state, built_path.string().c_str()) != LUA_OK)
         return lua_error(lua_state);
 
     lua_call(lua_state, 0, LUA_MULTRET);
