@@ -77,6 +77,9 @@ int CLuaBase::lua$CompileString(lua_State* lua_state)
         handleError = lua_toboolean(lua_state, 3);
     }
 
+    // Make sure that we are treating the source identifier as-is.
+    identifier.insert(0, 1, '=');
+
     int load_result = luaL_loadbuffer(lua_state, code, code_len, identifier.c_str());
     if (load_result == LUA_OK || !handleError)
         return 1;
