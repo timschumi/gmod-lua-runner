@@ -140,6 +140,9 @@ bool CLuaBase::is_active()
             return result.value();
     }
 
+    if (!simple_timers.empty())
+        return true;
+
     for (lua_State* coroutine = luaR_next_thread(main_lua_state); coroutine; coroutine = luaR_next_thread(coroutine)) {
         int coroutine_status = lua_status(coroutine);
 
@@ -205,12 +208,31 @@ void CLuaBase::run_event_loop()
             timers.erase(key);
         }
 
+        // Run simple timers whose cooldowns have expired.
+        std::list<int> simple_timers_to_run;
+        for (auto& timer : simple_timers) {
+            if (timer.cooldown > 0)
+                continue;
+
+            simple_timers_to_run.push_back(timer.function);
+        }
+        simple_timers.remove_if([](auto const& timer) {
+            return timer.cooldown <= 0;
+        });
+        for (auto timer : simple_timers_to_run) {
+            lua_rawgeti(lua_state, LUA_REGISTRYINDEX, timer);
+            lua_call(lua_state, 0, 0);
+            luaL_unref(lua_state, LUA_REGISTRYINDEX, timer);
+        }
+
         // Shift everything by 1/66th of a second.
         constexpr double delta = 1.0 / 66;
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(1000 * delta)));
         uptime += delta;
         for (auto& timer : timers)
             timer.second.cooldown -= delta;
+        for (auto& timer : simple_timers)
+            timer.cooldown -= delta;
     }
 }
 

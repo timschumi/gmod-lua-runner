@@ -39,3 +39,16 @@ int CLuaBase::lua$timer_Remove(lua_State* lua_state)
     timers.erase(identifier);
     return 0;
 }
+
+// https://wiki.facepunch.com/gmod/timer.Simple
+int CLuaBase::lua$timer_Simple(lua_State* lua_state)
+{
+    lua_Number delay = luaL_checknumber(lua_state, 1);
+    luaL_argcheck(lua_state, lua_isfunction(lua_state, 2), 2, "Expected function");
+    lua_pushvalue(lua_state, 2);
+    int function_ref = luaL_ref(lua_state, LUA_REGISTRYINDEX);
+
+    simple_timers.push_back({ function_ref, delay });
+
+    return 0;
+}

@@ -56,6 +56,7 @@
     FUNCTION("Create", timer_Create)                                \
     FUNCTION("Exists", timer_Exists)                                \
     FUNCTION("Remove", timer_Remove)                                \
+    FUNCTION("Simple", timer_Simple)                                \
     MODULE_END()
 
 #define ENUMERATE_METATABLES(METATABLE_START, METATABLE_END, TABLE_START, TABLE_END, FUNCTION) \
@@ -138,6 +139,12 @@ private:
         double cooldown;
     };
     std::map<std::string, Timer> timers;
+
+    struct SimpleTimer {
+        int function;
+        double cooldown;
+    };
+    std::list<SimpleTimer> simple_timers;
 
     // TODO: Maybe move this to libtier1.
     enum ConVarFlags {
