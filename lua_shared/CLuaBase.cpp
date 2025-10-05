@@ -57,8 +57,8 @@ CLuaBase::CLuaBase()
 #undef REGISTER_CONVAR_FLAG
 
 #define REGISTER_TYPE_ID(name, value) \
-    lua_pushstring(lua_state, #name);     \
-    lua_pushnumber(lua_state, value);     \
+    lua_pushstring(lua_state, #name); \
+    lua_pushnumber(lua_state, value); \
     lua_settable(lua_state, -3);
     ENUMERATE_TYPE_IDS(REGISTER_TYPE_ID)
 #undef REGISTER_TYPE_ID

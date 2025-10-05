@@ -26,6 +26,7 @@
     FUNCTION("require", require)                                    \
     FUNCTION("SysTime", SysTime)                                    \
     FUNCTION("type", type)                                          \
+    FUNCTION("TypeID", TypeID)                                      \
     MODULE_START("concommand")                                      \
     FUNCTION("Add", concommand_Add)                                 \
     MODULE_END()                                                    \
@@ -156,7 +157,7 @@
     E(TYPE_PHYSCOLLIDE, 42)      \
     E(TYPE_SURFACEINFO, 43)      \
     E(TYPE_COUNT, 44)            \
-    E(TYPE_COLOR, 255)           \
+    E(TYPE_COLOR, 255)
 
 class CLuaBase : public GarrysMod::Lua::ILuaBase {
 public:

@@ -398,6 +398,59 @@ int CLuaBase::lua$type(lua_State* lua_state)
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.TypeID
+int CLuaBase::lua$TypeID(lua_State* lua_state)
+{
+#define DEFINE_ENUM_ENTRY(name, value) constexpr long name = value;
+    ENUMERATE_TYPE_IDS(DEFINE_ENUM_ENTRY)
+#undef DEFINE_ENUM_ENTRY
+
+    if (lua_gettop(lua_state) == 0) {
+        lua_pushstring(lua_state, "TypeID expects a value");
+        return lua_error(lua_state);
+    }
+
+    int builtin_type = lua_type(lua_state, 1);
+
+    switch (builtin_type) {
+    case LUA_TNONE:
+        lua_pushinteger(lua_state, TYPE_NONE);
+        break;
+    case LUA_TNIL:
+        lua_pushinteger(lua_state, TYPE_NIL);
+        break;
+    case LUA_TBOOLEAN:
+        lua_pushinteger(lua_state, TYPE_BOOL);
+        break;
+    case LUA_TLIGHTUSERDATA:
+        lua_pushinteger(lua_state, TYPE_LIGHTUSERDATA);
+        break;
+    case LUA_TNUMBER:
+        lua_pushinteger(lua_state, TYPE_NUMBER);
+        break;
+    case LUA_TSTRING:
+        lua_pushinteger(lua_state, TYPE_STRING);
+        break;
+    case LUA_TTABLE:
+        lua_pushinteger(lua_state, TYPE_TABLE);
+        break;
+    case LUA_TFUNCTION:
+        lua_pushinteger(lua_state, TYPE_FUNCTION);
+        break;
+    case LUA_TUSERDATA:
+        lua_pushinteger(lua_state, TYPE_USERDATA);
+        break;
+    case LUA_TTHREAD:
+        lua_pushinteger(lua_state, TYPE_THREAD);
+        break;
+    default:
+        assert(false && "Unexpected type as TypeID argument");
+        break;
+    }
+
+    return 1;
+}
+
 void CLuaBase::unload_modules()
 {
     auto lua_state = luaR_current_thread(main_lua_state);
