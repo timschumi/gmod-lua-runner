@@ -27,6 +27,7 @@
     FUNCTION("Add", concommand_Add)                                 \
     MODULE_END()                                                    \
     MODULE_START("file")                                            \
+    FUNCTION("Exists", file_Exists)                                 \
     FUNCTION("Find", file_Find)                                     \
     FUNCTION("Open", file_Open)                                     \
     MODULE_END()                                                    \

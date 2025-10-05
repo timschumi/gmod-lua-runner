@@ -74,6 +74,31 @@ int CLuaBase::lua$meta$File_Read(lua_State* lua_state)
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/file.Exists
+int CLuaBase::lua$file_Exists(lua_State* lua_state)
+{
+    // FIXME: Sanitize path against directory traversal.
+    std::string file_name = luaL_checkstring(lua_state, 1);
+    std::string game_path = luaL_checkstring(lua_state, 2);
+
+    auto paths_to_search = file_search_path_to_list(game_path);
+
+    if (!paths_to_search)
+        return luaL_error(lua_state, "Unknown or unimplemented path for finding files: '%s'", game_path.c_str());
+
+    for (auto const& directory_path : paths_to_search.value()) {
+        std::filesystem::path full_path = this->base_directory / directory_path / file_name;
+
+        if (std::filesystem::exists(full_path)) {
+            lua_pushboolean(lua_state, true);
+            return 1;
+        }
+    }
+
+    lua_pushboolean(lua_state, false);
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/file.Find
 int CLuaBase::lua$file_Find(lua_State* lua_state)
 {
