@@ -107,6 +107,57 @@
     E(FCVAR_SERVER_CANNOT_QUERY, 536870912) \
     E(FCVAR_CLIENTCMD_CAN_EXECUTE, 1073741824)
 
+// https://wiki.facepunch.com/gmod/Enums/TYPE
+#define ENUMERATE_TYPE_IDS(E)    \
+    E(TYPE_NONE, -1)             \
+    E(TYPE_INVALID, -1)          \
+    E(TYPE_NIL, 0)               \
+    E(TYPE_BOOL, 1)              \
+    E(TYPE_LIGHTUSERDATA, 2)     \
+    E(TYPE_NUMBER, 3)            \
+    E(TYPE_STRING, 4)            \
+    E(TYPE_TABLE, 5)             \
+    E(TYPE_FUNCTION, 6)          \
+    E(TYPE_USERDATA, 7)          \
+    E(TYPE_THREAD, 8)            \
+    E(TYPE_ENTITY, 9)            \
+    E(TYPE_VECTOR, 10)           \
+    E(TYPE_ANGLE, 11)            \
+    E(TYPE_PHYSOBJ, 12)          \
+    E(TYPE_SAVE, 13)             \
+    E(TYPE_RESTORE, 14)          \
+    E(TYPE_DAMAGEINFO, 15)       \
+    E(TYPE_EFFECTDATA, 16)       \
+    E(TYPE_MOVEDATA, 17)         \
+    E(TYPE_RECIPIENTFILTER, 18)  \
+    E(TYPE_USERCMD, 19)          \
+    E(TYPE_SCRIPTEDVEHICLE, 20)  \
+    E(TYPE_MATERIAL, 21)         \
+    E(TYPE_PANEL, 22)            \
+    E(TYPE_PARTICLE, 23)         \
+    E(TYPE_PARTICLEEMITTER, 24)  \
+    E(TYPE_TEXTURE, 25)          \
+    E(TYPE_USERMSG, 26)          \
+    E(TYPE_CONVAR, 27)           \
+    E(TYPE_IMESH, 28)            \
+    E(TYPE_MATRIX, 29)           \
+    E(TYPE_SOUND, 30)            \
+    E(TYPE_PIXELVISHANDLE, 31)   \
+    E(TYPE_DLIGHT, 32)           \
+    E(TYPE_VIDEO, 33)            \
+    E(TYPE_FILE, 34)             \
+    E(TYPE_LOCOMOTION, 35)       \
+    E(TYPE_PATH, 36)             \
+    E(TYPE_NAVAREA, 37)          \
+    E(TYPE_SOUNDHANDLE, 38)      \
+    E(TYPE_NAVLADDER, 39)        \
+    E(TYPE_PARTICLESYSTEM, 40)   \
+    E(TYPE_PROJECTEDTEXTURE, 41) \
+    E(TYPE_PHYSCOLLIDE, 42)      \
+    E(TYPE_SURFACEINFO, 43)      \
+    E(TYPE_COUNT, 44)            \
+    E(TYPE_COLOR, 255)           \
+
 class CLuaBase : public GarrysMod::Lua::ILuaBase {
 public:
     CLuaBase();

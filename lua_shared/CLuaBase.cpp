@@ -56,6 +56,13 @@ CLuaBase::CLuaBase()
     ENUMERATE_CONVAR_FLAGS(REGISTER_CONVAR_FLAG)
 #undef REGISTER_CONVAR_FLAG
 
+#define REGISTER_TYPE_ID(name, value) \
+    lua_pushstring(lua_state, #name);     \
+    lua_pushnumber(lua_state, value);     \
+    lua_settable(lua_state, -3);
+    ENUMERATE_TYPE_IDS(REGISTER_TYPE_ID)
+#undef REGISTER_TYPE_ID
+
     lua_pop(lua_state, 1);
 
 #define REGISTER_METATABLE_START(name)   \
