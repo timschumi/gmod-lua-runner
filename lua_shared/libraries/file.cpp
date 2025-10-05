@@ -20,6 +20,8 @@ static std::optional<std::list<std::string>> file_search_path_to_list(std::strin
         return std::list<std::string> { "garrysmod/data" };
     else if (path == "GAME")
         return std::list<std::string> { "garrysmod" };
+    else if (path == "MOD" || path == "garrysmod")
+        return std::list<std::string> { "garrysmod" };
     else
         return {};
 }
