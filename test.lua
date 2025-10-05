@@ -8,7 +8,6 @@ GAMEMODE = {
     Name = "Sandbox",
     TeamBased = false,
 }
-GetConVar("gluatest_enable"):SetBool(true)
 
 hook.Add("GLuaTest_LoggedTestFailure", "record_test_failures", function(errInfo)
     found_failed_test = true
