@@ -30,6 +30,7 @@
     FUNCTION("Exists", file_Exists)                                 \
     FUNCTION("Find", file_Find)                                     \
     FUNCTION("Open", file_Open)                                     \
+    FUNCTION("Read", file_Read)                                     \
     MODULE_END()                                                    \
     MODULE_START("hook")                                            \
     FUNCTION("Add", hook_Add)                                       \

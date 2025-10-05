@@ -196,3 +196,37 @@ int CLuaBase::lua$file_Open(lua_State* lua_state)
     lua_pushnil(lua_state);
     return 1;
 }
+
+// https://wiki.facepunch.com/gmod/file.Read
+int CLuaBase::lua$file_Read(lua_State* lua_state)
+{
+    // FIXME: Sanitize path against directory traversal.
+    std::string file_name = luaL_checkstring(lua_state, 1);
+    std::string game_path = lua_gettop(lua_state) >= 2 ? luaL_checkstring(lua_state, 2) : "DATA";
+
+    auto paths_to_search = file_search_path_to_list(game_path);
+
+    if (!paths_to_search)
+        return luaL_error(lua_state, "Unknown or unimplemented path for finding files: '%s'", game_path.c_str());
+
+    for (auto const& directory_path : paths_to_search.value()) {
+        std::filesystem::path full_path = this->base_directory / directory_path / file_name;
+
+        // TODO: std::ios_base::binary?
+        std::fstream file(full_path.string().c_str(), std::ios_base::in);
+
+        if (file.fail())
+            continue;
+
+        std::string result;
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        result = buffer.str();
+
+        lua_pushlstring(lua_state, result.c_str(), result.size());
+        return 1;
+    }
+
+    lua_pushnil(lua_state);
+    return 1;
+}
