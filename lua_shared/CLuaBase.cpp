@@ -15,11 +15,9 @@ CLuaBase::CLuaBase()
 
     auto lua_state = main_lua_state;
 
-    luaopen_base(lua_state);
-    luaopen_debug(lua_state);
-    luaopen_math(lua_state);
-    luaopen_string(lua_state);
-    luaopen_table(lua_state);
+    // Note: Not all libraries or functions are included in Garry's Mod.
+    // The selection of loaded libraries is modified in LuaJIT.
+    luaL_openlibs(lua_state);
 
     lua_pushvalue(lua_state, LUA_GLOBALSINDEX);
 

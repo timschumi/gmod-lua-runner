@@ -289,6 +289,16 @@ int CLuaBase::lua$require(lua_State* lua_state)
     char full_name[formatted_name_length + 1];
     snprintf(full_name, sizeof(full_name), format, this->base_directory.string().c_str(), module_name.c_str());
 
+    if (!std::filesystem::exists(std::filesystem::path { full_name, full_name + formatted_name_length })) {
+        // If the module doesn't exist then delegate to the Lua module system.
+        // TODO: Check which error message is printed if neither exists.
+        assert(lua$require$original != -1);
+        lua_rawgeti(lua_state, LUA_REGISTRYINDEX, lua$require$original);
+        lua_pushvalue(lua_state, 1);
+        lua_call(lua_state, 1, 0);
+        return 0;
+    }
+
 #if defined(__linux__)
     void* library_handle = dlopen(full_name, RTLD_LAZY);
     if (!library_handle) {
