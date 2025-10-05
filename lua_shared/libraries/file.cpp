@@ -127,9 +127,13 @@ int CLuaBase::lua$file_Find(lua_State* lua_state)
         full_name.append("/");
         full_name.append(name);
 
-        assert(full_name.ends_with("/*"));
-
-        full_name = full_name.substr(0, full_name.size() - 2);
+        // FIXME: Check and implement support for arbitrary globs.
+        //        Until then we only support patterns in the last path name.
+        size_t last_sep_pos = full_name.find_last_of('/');
+        assert(last_sep_pos != std::string::npos);
+        std::string wildcard = full_name.substr(last_sep_pos + 1);
+        full_name = full_name.substr(0, last_sep_pos);
+        assert(full_name.find_first_of('*') == std::string::npos);
 
         if (!std::filesystem::exists(full_name))
             continue;
@@ -145,6 +149,12 @@ int CLuaBase::lua$file_Find(lua_State* lua_state)
             auto file_path = dir_entry.path().generic_string();
             assert(file_path.starts_with(full_name + "/"));
             file_path = file_path.substr(full_name.length() + 1);
+
+            // FIXME: For now, handle any-matches and suffix-matches.
+            //        Full glob support will follow eventually.
+            assert(wildcard[0] == '*');
+            if (!file_path.ends_with(wildcard.substr(1)))
+                continue;
 
             if (dir_entry.is_directory())
                 lua_pushvalue(lua_state, -1);
