@@ -16,6 +16,8 @@ static std::optional<std::list<std::string>> file_search_path_to_list(std::strin
 {
     if (path == "LUA")
         return std::list<std::string> { "garrysmod/lua" };
+    else if (path == "DATA")
+        return std::list<std::string> { "garrysmod/data" };
     else
         return {};
 }
