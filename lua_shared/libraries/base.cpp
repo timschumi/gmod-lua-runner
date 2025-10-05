@@ -64,6 +64,26 @@ int CLuaBase::lua$Color(lua_State* lua_state)
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/Global.CompileString
+int CLuaBase::lua$CompileString(lua_State* lua_state)
+{
+    int number_of_arguments = lua_gettop(lua_state);
+    size_t code_len = 0;
+    char const* code = luaL_checklstring(lua_state, 1, &code_len);
+    std::string identifier = luaL_checkstring(lua_state, 2);
+    bool handleError = true;
+    if (number_of_arguments >= 3) {
+        luaL_argcheck(lua_state, lua_isboolean(lua_state, 3), 3, "Expected boolean");
+        handleError = lua_toboolean(lua_state, 3);
+    }
+
+    int load_result = luaL_loadbuffer(lua_state, code, code_len, identifier.c_str());
+    if (load_result == LUA_OK || !handleError)
+        return 1;
+
+    return lua_error(lua_state);
+}
+
 // https://wiki.facepunch.com/gmod/ConVar:GetBool
 int CLuaBase::lua$meta$ConVar_GetBool(lua_State* lua_state)
 {

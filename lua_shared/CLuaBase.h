@@ -11,6 +11,7 @@
 
 #define ENUMERATE_LUA_FUNCTIONS(FUNCTION, MODULE_START, MODULE_END) \
     FUNCTION("Color", Color)                                        \
+    FUNCTION("CompileString", CompileString)                        \
     FUNCTION("CreateConVar", CreateConVar)                          \
     FUNCTION("CurTime", CurTime)                                    \
     FUNCTION("ErrorNoHaltWithStack", ErrorNoHaltWithStack)          \
