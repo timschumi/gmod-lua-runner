@@ -39,6 +39,35 @@ int CLuaBase::lua$string_Explode(lua_State* lua_state)
     return 1;
 }
 
+// https://wiki.facepunch.com/gmod/string.Replace
+int CLuaBase::lua$string_Replace(lua_State* lua_state)
+{
+    std::string str = luaL_checkstring(lua_state, 1);
+    std::string find = luaL_checkstring(lua_state, 2);
+    size_t find_len = find.length();
+    std::string replace = luaL_checkstring(lua_state, 3);
+    std::string result;
+
+    size_t offset = 0;
+    while (true) {
+        size_t chunk_start = offset;
+        offset = str.find(find, offset);
+
+        if (offset == std::string::npos) {
+            result.append(str.substr(chunk_start));
+            break;
+        }
+
+        result.append(str.substr(chunk_start, offset - chunk_start));
+
+        result.append(replace);
+        offset += find_len;
+    }
+
+    lua_pushstring(lua_state, result.c_str());
+    return 1;
+}
+
 // https://wiki.facepunch.com/gmod/string.Right
 int CLuaBase::lua$string_Right(lua_State* lua_state)
 {
