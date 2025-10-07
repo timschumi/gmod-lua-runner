@@ -44,17 +44,16 @@ int CLuaBase::lua$hook_Call(lua_State* lua_state)
     }
 
     for (auto hook : hooks_to_be_run) {
-        int stack_top_without_args = lua_gettop(lua_state);
-
         lua_rawgeti(lua_state, LUA_REGISTRYINDEX, hook);
         for (int i = 1; i <= number_of_arguments; i++)
             lua_pushvalue(lua_state, 2 + i);
-        lua_call(lua_state, number_of_arguments, LUA_MULTRET);
 
-        int number_of_returned_values = lua_gettop(lua_state) - stack_top_without_args;
-        if (number_of_returned_values > 0 && lua_type(lua_state, -number_of_returned_values)) {
+        // Note: hook.Call returns results via `a, b, c, d, e, f`, and `a` is checked.
+        lua_call(lua_state, number_of_arguments, 6);
+
+        if (lua_type(lua_state, -6) != LUA_TNIL) {
             luaL_unref(lua_state, LUA_REGISTRYINDEX, gamemode_table_ref);
-            return number_of_returned_values;
+            return 6;
         }
     }
 
